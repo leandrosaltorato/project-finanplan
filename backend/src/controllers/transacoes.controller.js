@@ -3,11 +3,13 @@ const prisma = require("../data/prisma");
 const cadastrar = async (req, res) => {
     const data = req.body;
 
+    data.data = new Date();
+
     const item = await prisma.transacoes.create({
         data
     });
 
-    res.json(item).status(201).end();
+    res.status(201).json(item);
 };
 
 const listar = async (req, res) => {

@@ -8,50 +8,44 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const lembretesRoutes = require('./src/routes/lembretes.routes');
+const lembretesRoutes = require("./src/routes/lembretes.routes");
 
-app.use('/lembretes', lembretesRoutes);
+app.use("/lembretes", lembretesRoutes);
 
+const previsaosaldoRoutes = require("./src/routes/previsaosaldo.routes");
 
-const previsaosaldoRoutes = require('./src/routes/previsaosaldo.routes');
+app.use("/previsaosaldo", previsaosaldoRoutes);
 
-app.use('/previsaosaldo', previsaosaldoRoutes);
+const categoriaRoutes = require("./src/routes/categoria.routes");
 
+app.use("/categoria", categoriaRoutes);
 
-const categoriaRoutes = require('./src/routes/categoria.routes');
+const transacoesRoutes = require("./src/routes/transacoes.routes");
 
-app.use('/categoria', categoriaRoutes);
+app.use("/transacoes", transacoesRoutes);
 
+const usuarioscontrolesRoutes = require("./src/routes/usuarioscontroles.routes");
 
-const transacoesRoutes = require('./src/routes/transacoes.routes');
+app.use("/usuarioscontroles", usuarioscontrolesRoutes);
 
-app.use('/transacoes', transacoesRoutes);
+const controleRoutes = require("./src/routes/controle.routes");
 
+app.use("/controle", controleRoutes);
 
-const usuarioscontrolesRoutes = require('./src/routes/usuarioscontroles.routes');
+const usuariosRoutes = require("./src/routes/usuarios.routes");
 
-app.use('/usuarioscontroles', usuarioscontrolesRoutes);
+app.use("/usuarios", usuariosRoutes);
 
+const cuponsRoutes = require('./src/routes/cupons.routes');
 
-const controleRoutes = require('./src/routes/controle.routes');
+app.use('/cupons', cuponsRoutes);
 
-app.use('/controle', controleRoutes);
+const administradoresRoutes = require("./src/routes/administradores.routes");
 
+app.use("/administradores", administradoresRoutes);
 
-const usuariosRoutes = require('./src/routes/usuarios.routes');
-
-app.use('/usuarios', usuariosRoutes);
-
-
-const administradoresRoutes = require('./src/routes/administradores.routes');
-
-app.use('/administradores', administradoresRoutes);
-
-// importar rotas e aplica-las
-
-// fim das rotas
 
 
 app.listen(process.env.PORT_APP, () => {
-    console.log("Online na porta " + process.env.PORT_APP);
+  console.log("Online na porta " + process.env.PORT_APP);
 });
