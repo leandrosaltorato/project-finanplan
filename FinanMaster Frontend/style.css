@@ -1,0 +1,225 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(to bottom, #155e63, #1f647b);
+}
+
+.estrelas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 25% 15%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 30%, #fff, transparent),
+    radial-gradient(1px 1px at 40% 70%, #fff, transparent),
+    radial-gradient(1px 1px at 85% 80%, #fff, transparent),
+    radial-gradient(1px 1px at 10% 85%, #fff, transparent);
+  opacity: 0.45;
+}
+
+.formulario {
+  width: 400px;
+  padding: 35px;
+  color: #fff;
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.logo i {
+  font-size: 30px;
+}
+
+.logo h1 {
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.subtitulo {
+  text-align: center;
+  margin: 8px 0 30px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.caixa-formulario {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.caixa-formulario input {
+  width: 100%;
+  height: 50px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  padding: 0 50px 0 20px;
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.12);
+  font-size: 16px;
+  transition: 0.3s ease;
+}
+
+.caixa-formulario input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.caixa-formulario input:focus {
+  background-color: rgba(255, 255, 255, 0.16);
+}
+
+.caixa-formulario i {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #d1fae5;
+}
+
+.caixa-lembrar-esqueci {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.caixa-lembrar-esqueci label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.caixa-lembrar-esqueci label input {
+  accent-color: #10b981;
+}
+
+.caixa-lembrar-esqueci a {
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.caixa-lembrar-esqueci a:hover {
+  text-decoration: underline;
+}
+
+button {
+  width: 100%;
+  height: 45px;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#botao-entrar {
+    background-color: #fff;
+    color: #000000;
+}
+
+#botao-entrar:hover {
+    background-color: #236f67;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.separador {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 13px;
+}
+
+.separador::before,
+.separador::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.separador span {
+  padding: 0 5px;
+}
+
+.botao-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #fff;
+  color: #333;
+}
+
+.botao-google i {
+  font-size: 22px;
+  color: #4285f4;
+}
+
+.botao-google:hover {
+  background: #f5f5f5;
+  transform: translateY(-2px);
+}
+
+.link-registro {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+}
+
+.link-registro a {
+  text-decoration: none;
+  color: #d1fae5;
+  font-weight: bold;
+}
+
+.link-registro a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 500px) {
+  .formulario {
+    width: calc(100% - 30px);
+    padding: 25px;
+  }
+}
+
+@media (max-height: 650px) {
+  body {
+    overflow-y: auto;
+    padding: 20px 0;
+  }
+}
