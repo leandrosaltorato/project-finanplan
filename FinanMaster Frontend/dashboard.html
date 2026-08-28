@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,17 +9,16 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <link href="https://fonts.googleapis.com" rel="stylesheet" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" href="styles/dashboard.css" />
   </head>
@@ -67,7 +66,7 @@
 
         <div class="sidebar">
           <a href="dashboard.html">
-            <span class="material-icons"> dashboard </span>
+            <span class="material-icons">dashboard</span>
             <h4>Dashboard</h4>
           </a>
 
@@ -100,31 +99,35 @@
             <p>Visão geral das suas finanças</p>
           </div>
 
-          <button class="button type1" onclick="abrirModal()"></button>
+          <button
+            type="button"
+            class="button type1"
+            id="btn-abrir-modal"
+          ></button>
         </div>
 
         <div class="cards">
           <div class="card">
             <h3>Saldo Total</h3>
-            <h2>R$ 6.820,00</h2>
+            <h2 id="saldo-total">R$ 0,00</h2>
             <span class="positivo"> +12% vs mês anterior </span>
           </div>
 
           <div class="card">
             <h3>Receitas</h3>
-            <h2>R$ 10.500,00</h2>
-            <span class="positivo"> +R$ 2.000 freelance </span>
+            <h2 id="receitas">R$ 0,00</h2>
+            <span class="positivo"> Receitas do período </span>
           </div>
 
           <div class="card">
             <h3>Despesas</h3>
-            <h2>R$ 3.680,00</h2>
-            <span class="negativo"> 35% da receita </span>
+            <h2 id="despesas">R$ 0,00</h2>
+            <span class="negativo"> Despesas do período </span>
           </div>
 
           <div class="card">
             <h3>Meta de Economia</h3>
-            <h2>R$ 2.046,00</h2>
+            <h2 id="meta-economia">R$ 0,00</h2>
             <span class="positivo"> 30% do saldo </span>
           </div>
         </div>
@@ -133,86 +136,58 @@
           <div class="transacoes">
             <h2>Transações Recentes</h2>
 
-            <div class="lista-transacoes">
-              <div class="item-transacao">
-                <div class="lado-esquerdo">
-                  <div class="icone positivo">
-                    <span class="material-icons"> north_east </span>
-                  </div>
-
-                  <div class="info">
-                    <h4>Salário</h4>
-                    <small> Salário · 01 de mar. </small>
-                  </div>
-                </div>
-
-                <div class="valor positivo">+ R$ 8.500,00</div>
-              </div>
-
-              <div class="item-transacao">
-                <div class="lado-esquerdo">
-                  <div class="icone negativo">
-                    <span class="material-icons"> south_east </span>
-                  </div>
-
-                  <div class="info">
-                    <h4>Aluguel</h4>
-                    <small> Moradia · 02 de mar. </small>
-                  </div>
-                </div>
-
-                <div class="valor negativo">- R$ 2.200,00</div>
-              </div>
-
-              <div class="item-transacao">
-                <div class="lado-esquerdo">
-                  <div class="icone negativo">
-                    <span class="material-icons"> south_east </span>
-                  </div>
-
-                  <div class="info">
-                    <h4>Supermercado</h4>
-                    <small> Alimentação · 03 de mar. </small>
-                  </div>
-                </div>
-
-                <div class="valor negativo">- R$ 650,00</div>
-              </div>
-
-              <div class="item-transacao">
-                <div class="lado-esquerdo">
-                  <div class="icone negativo">
-                    <span class="material-icons"> south_east </span>
-                  </div>
-
-                  <div class="info">
-                    <h4>Uber</h4>
-                    <small> Transporte · 03 de mar. </small>
-                  </div>
-                </div>
-
-                <div class="valor negativo">- R$ 120,00</div>
-              </div>
-
-              <div class="item-transacao">
-                <div class="lado-esquerdo">
-                  <div class="icone negativo">
-                    <span class="material-icons"> south_east </span>
-                  </div>
-
-                  <div class="info">
-                    <h4>Netflix + Spotify</h4>
-                    <small> Lazer · 04 de mar. </small>
-                  </div>
-                </div>
-
-                <div class="valor negativo">- R$ 75,00</div>
-              </div>
-            </div>
+            <div class="lista-transacoes" id="transacoes-recentes"></div>
           </div>
         </div>
       </section>
     </main>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="fechar-modal">&times;</span>
+
+        <h2>Nova transação</h2>
+
+        <form id="form-transacao">
+          <label for="descricao">Descrição</label>
+
+          <input
+            type="text"
+            id="descricao"
+            name="descricao"
+            placeholder="Ex: Supermercado"
+            required
+          />
+
+          <label for="valor">Valor</label>
+
+          <input
+            type="number"
+            id="valor"
+            name="valor"
+            placeholder="0,00"
+            step="0.01"
+            min="0.01"
+            required
+          />
+
+          <label for="tipo">Tipo</label>
+
+          <select id="tipo" name="tipo" required>
+            <option value="ENTRADA">Entrada</option>
+            <option value="SAIDA">Saída</option>
+          </select>
+
+          <label for="categoria">Categoria</label>
+
+          <select id="categoria" name="categoriaId" required>
+            <option value="">Selecione uma categoria</option>
+          </select>
+
+          <button type="submit">Cadastrar</button>
+        </form>
+      </div>
+    </div>
 
     <script type="module" src="scripts/dashboard.js"></script>
   </body>

@@ -2,14 +2,20 @@ const express = require("express");
 
 const router = express.Router();
 
-const { 
-    cadastrar, 
-    listar, 
-    buscar, 
-    atualizar, 
-    excluir } = require("../controllers/usuarios.controller");
+const {
+  cadastrar,
+  listar,
+  buscar,
+  atualizar,
+  excluir,
+  login,
+  loginGoogle
+} = require("../controllers/usuarios.controller");
 
 router.post("/cadastrar", cadastrar);
+router.post("/login", login);
+router.post("/google", loginGoogle);
+
 router.get("/listar", listar);
 router.get("/buscar/:id", buscar);
 router.put("/atualizar/:id", atualizar);

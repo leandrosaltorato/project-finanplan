@@ -7,11 +7,13 @@ datasource db {
 }
 
 model Usuarios {
-  id        Int                 @id @default(autoincrement())
-  nome      String
-  senha     String
-  email     String
-  Telefone  String
+  id          Int     @id @default(autoincrement())
+  nome        String
+  senha       String?
+  email       String  @unique
+  Telefone    String?
+  firebaseUid String? @unique
+
   controles UsuariosControles[]
   lembretes Lembretes[]
 }
@@ -68,7 +70,7 @@ enum TRANSACOES {
 
 model Categoria {
   id         Int            @id @default(autoincrement())
-  nome       String
+  nome       String         @unique
   tipo       TIPO_CATEGORIA
   cor        String
   transacoes Transacoes[]
@@ -88,7 +90,7 @@ model PrevisaoSaldo {
   dataCalculo DateTime
   saldo       Float
   status      STATUS_PREVISAO
-  planoIA Json?
+  planoIA     Json?
 
   controle   Controle @relation(fields: [controleId], references: [id])
   controleId Int

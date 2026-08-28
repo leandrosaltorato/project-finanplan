@@ -556,5 +556,105 @@ main aside .sidebar h4 {
   transform: translateY(-30px) scale(0) rotate(120deg);
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    position: relative;
+    width: 420px;
+    max-width: 90%;
+    background: var(--color-white);
+    padding: 2rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: abrirModal 0.2s ease;
+}
+
+.modal-content h2 {
+    margin-bottom: 1.5rem;
+    color: var(--color-dark);
+    font-size: 1.6rem;
+}
+
+.fechar-modal {
+    position: absolute;
+    top: 12px;
+    right: 18px;
+    font-size: 2rem;
+    color: var(--color-gray-dark);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.fechar-modal:hover {
+    color: var(--color-danger);
+}
+
+#form-transacao {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+
+#form-transacao label {
+    color: var(--color-dark);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+#form-transacao input,
+#form-transacao select {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f8f8f8;
+    color: var(--color-dark);
+    font-size: 0.9rem;
+    appearance: auto;
+}
+
+#form-transacao input:focus,
+#form-transacao select:focus {
+    border: 1px solid var(--color-secundary);
+}
+
+#form-transacao button {
+    width: 100%;
+    height: 44px;
+    margin-top: 1rem;
+    border-radius: 8px;
+    background: var(--color-secundary);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#form-transacao button:hover {
+    background: #087d64;
+    transform: translateY(-2px);
+}
+
+@keyframes abrirModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
 
