@@ -26,5 +26,5 @@ Este projeto foi desenvolvido utilizando:
 
 ##  Objetivo
 
-Este projeto tem como objetivo auxiliar usuários a terem maior controle sobre suas finanças, tendo organização e consciência financeira
+Este projeto tem como objetivo auxiliar usuários a terem maior controle sobre suas finanças, tendo organização e consciência financeira.
 
