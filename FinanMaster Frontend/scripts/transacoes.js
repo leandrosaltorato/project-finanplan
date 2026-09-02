@@ -1,432 +1,671 @@
-let transacoes = [
-    { id: 1,  nome: 'Salário',         obs: 'Pagamento mensal',         categoria: 'salario',     tipo: 'receita', valor: 8500,  data: '2025-03-01', metodo: 'TED/DOC'  },
-    { id: 2,  nome: 'Freelance Web',   obs: 'Projeto de e-commerce',    categoria: 'freelance',   tipo: 'receita', valor: 2000,  data: '2025-03-02', metodo: 'PIX'      },
-    { id: 3,  nome: 'Aluguel',         obs: 'Moradia mensal',           categoria: 'moradia',     tipo: 'despesa', valor: 2200,  data: '2025-03-02', metodo: 'TED/DOC'  },
-    { id: 4,  nome: 'Supermercado',    obs: 'Compras da semana',        categoria: 'alimentacao', tipo: 'despesa', valor: 650,   data: '2025-03-03', metodo: 'Débito'   },
-    { id: 5,  nome: 'Uber',            obs: 'Corridas do dia',          categoria: 'transporte',  tipo: 'despesa', valor: 130,   data: '2025-03-03', metodo: 'Crédito'  },
-    { id: 6,  nome: 'Netflix + Spotify', obs: 'Assinaturas mensais',   categoria: 'assinatura',  tipo: 'despesa', valor: 89,    data: '2025-03-04', metodo: 'Crédito'  },
-    { id: 7,  nome: 'Academia',        obs: 'Mensalidade',              categoria: 'saude',       tipo: 'despesa', valor: 120,   data: '2025-03-05', metodo: 'Débito'   },
-    { id: 8,  nome: 'Restaurante',     obs: 'Jantar com amigos',        categoria: 'alimentacao', tipo: 'despesa', valor: 185,   data: '2025-03-07', metodo: 'Crédito'  },
-    { id: 9,  nome: 'Farmácia',        obs: 'Remédios',                 categoria: 'saude',       tipo: 'despesa', valor: 67,    data: '2025-03-08', metodo: 'PIX'      },
-    { id: 10, nome: 'Cinema',          obs: 'Lazer fim de semana',      categoria: 'lazer',       tipo: 'despesa', valor: 45,    data: '2025-03-09', metodo: 'Crédito'  },
-    { id: 11, nome: 'Dividendos',      obs: 'Rendimentos de ações',     categoria: 'freelance',   tipo: 'receita', valor: 320,   data: '2025-03-10', metodo: 'TED/DOC'  },
-    { id: 12, nome: 'Gasolina',        obs: 'Abastecimento',            categoria: 'transporte',  tipo: 'despesa', valor: 210,   data: '2025-03-11', metodo: 'Débito'   },
-    { id: 13, nome: 'Mercado Livre',   obs: 'Compra online',            categoria: 'lazer',       tipo: 'despesa', valor: 148,   data: '2025-03-12', metodo: 'PIX'      },
-    { id: 14, nome: 'Luz',             obs: 'Conta de energia',         categoria: 'moradia',     tipo: 'despesa', valor: 136,   data: '2025-03-13', metodo: 'Débito'   },
-    { id: 15, nome: 'Internet',        obs: 'Plano fibra',              categoria: 'assinatura',  tipo: 'despesa', valor: 100,   data: '2025-03-14', metodo: 'Débito'   },
-    { id: 16, nome: 'Venda de curso',  obs: 'Infoproduto',              categoria: 'freelance',   tipo: 'receita', valor: 450,   data: '2025-03-15', metodo: 'PIX'      },
-    { id: 17, nome: 'Bar',             obs: 'Happy hour',               categoria: 'lazer',       tipo: 'despesa', valor: 75,    data: '2025-03-16', metodo: 'Crédito'  },
-    { id: 18, nome: 'Dentista',        obs: 'Consulta de rotina',       categoria: 'saude',       tipo: 'despesa', valor: 200,   data: '2025-03-17', metodo: 'PIX'      },
-    { id: 19, nome: 'Estacionamento',  obs: 'Shopping',                 categoria: 'transporte',  tipo: 'despesa', valor: 28,    data: '2025-03-18', metodo: 'Dinheiro' },
-    { id: 20, nome: 'Condomínio',      obs: 'Taxa mensal',              categoria: 'moradia',     tipo: 'despesa', valor: 450,   data: '2025-03-19', metodo: 'Débito'   },
-    { id: 21, nome: 'iFood',           obs: 'Delivery',                 categoria: 'alimentacao', tipo: 'despesa', valor: 95,    data: '2025-03-20', metodo: 'Crédito'  },
-    { id: 22, nome: 'Reembolso',       obs: 'Empresa',                  categoria: 'salario',     tipo: 'receita', valor: 230,   data: '2025-03-21', metodo: 'PIX'      },
-    { id: 23, nome: 'Roupa',           obs: 'Shopping',                 categoria: 'lazer',       tipo: 'despesa', valor: 250,   data: '2025-03-22', metodo: 'Crédito'  },
-    { id: 24, nome: 'Livros',          obs: 'Amazon',                   categoria: 'lazer',       tipo: 'despesa', valor: 87,    data: '2025-03-24', metodo: 'Crédito'  },
-];
+const API_URL = "http://localhost:3000";
+const CONTROLE_ID = 1;
 
-
-const iconeCategoria = {
-    salario:     'work',
-    freelance:   'laptop',
-    moradia:     'home',
-    alimentacao: 'restaurant',
-    transporte:  'directions_car',
-    lazer:       'sports_esports',
-    saude:       'favorite',
-    assinatura:  'subscriptions',
-    outro:       'receipt',
-};
-
-const nomeCategoria = {
-    salario:     'Salário',
-    freelance:   'Freelance',
-    moradia:     'Moradia',
-    alimentacao: 'Alimentação',
-    transporte:  'Transporte',
-    lazer:       'Lazer',
-    saude:       'Saúde',
-    assinatura:  'Assinatura',
-    outro:       'Outro',
-};
+let transacoes = [];
+let categorias = [];
 
 let paginaAtual = 1;
 const porPagina = 8;
-let filtroTipo = '';
-let filtroMes = '03';
-let filtroCategoria = '';
-let buscaTexto = '';
-let tipoNova = 'receita';
-let idExcluir = null;
-let proximoId = transacoes.length + 1;
 
+let filtroTipo = "";
+let filtroMes = "";
+let filtroCategoria = "";
+let buscaTexto = "";
+
+let tipoNova = "receita";
+let idExcluir = null;
+let idEditando = null;
+
+const iconeCategoria = {
+  ALIMENTACAO: "restaurant",
+  LAZER: "sports_esports",
+  EDUCACAO: "school",
+  TRANSPORTE: "directions_car",
+  SAUDE: "favorite",
+  OUTROS: "receipt",
+  SALARIO: "work",
+  FREELANCE: "laptop",
+  MORADIA: "home",
+  ASSINATURA: "subscriptions",
+};
 
 function formatarMoeda(valor) {
-    return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+  return Number(valor || 0).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
 
-function formatarData(dataStr) {
-    const [ano, mes, dia] = dataStr.split('-');
-    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-    return `${dia} de ${meses[parseInt(mes) - 1]}.`;
+function formatarData(data) {
+  if (!data) return "";
+
+  const dataObj = new Date(data);
+
+  if (Number.isNaN(dataObj.getTime())) return "";
+
+  const meses = [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez",
+  ];
+
+  return `${String(dataObj.getDate()).padStart(2, "0")} de ${meses[dataObj.getMonth()]}.`;
+}
+
+function nomeCategoria(categoria) {
+  return String(categoria?.nome || categoria?.tipo || "Outros");
+}
+
+function chaveCategoria(categoria) {
+  return nomeCategoria(categoria).toUpperCase();
+}
+
+function converterTransacao(transacao) {
+  return {
+    ...transacao,
+    nome: transacao.descricao || "",
+    tipo: transacao.tipo === "ENTRADA" ? "receita" : "despesa",
+    categoriaId: transacao.categoriaId,
+    categoria: transacao.categoria || null,
+  };
+}
+
+async function carregarCategorias() {
+  try {
+    const resposta = await fetch(`${API_URL}/categoria/listar`);
+
+    if (!resposta.ok) {
+      throw new Error("Erro ao buscar categorias");
+    }
+
+    categorias = await resposta.json();
+
+    preencherCategorias();
+  } catch (error) {
+    console.error("Erro ao carregar categorias:", error);
+  }
+}
+
+function preencherCategorias() {
+  const select = document.getElementById("nova-categoria");
+  const filtro = document.getElementById("filtro-categoria");
+
+  if (select) {
+    select.innerHTML = `<option value="">Selecione uma categoria</option>`;
+
+    categorias.forEach((categoria) => {
+      const option = document.createElement("option");
+      option.value = categoria.id;
+      option.textContent = nomeCategoria(categoria);
+      select.appendChild(option);
+    });
+  }
+
+  if (filtro) {
+    filtro.innerHTML = `<option value="">Todas as categorias</option>`;
+
+    categorias.forEach((categoria) => {
+      const option = document.createElement("option");
+      option.value = categoria.id;
+      option.textContent = nomeCategoria(categoria);
+      filtro.appendChild(option);
+    });
+  }
+}
+
+async function carregarTransacoes() {
+  try {
+    const resposta = await fetch(`${API_URL}/transacoes/listar`);
+
+    if (!resposta.ok) {
+      throw new Error("Erro ao buscar transações");
+    }
+
+    const dados = await resposta.json();
+
+    transacoes = Array.isArray(dados) ? dados.map(converterTransacao) : [];
+
+    paginaAtual = 1;
+
+    renderizarLista();
+    atualizarResumo();
+  } catch (error) {
+    console.error(error);
+
+    const lista = document.getElementById("lista-transacoes");
+
+    if (lista) {
+      lista.innerHTML = `
+        <div class="lista-vazia">
+          <div class="material-icons">error</div>
+          <p>Não foi possível carregar as transações.</p>
+        </div>
+      `;
+    }
+  }
 }
 
 function filtrarTransacoes() {
-    return transacoes.filter(t => {
-        const mesT = t.data.split('-')[1];
-        const matchMes = filtroMes === '' || mesT === filtroMes;
-        const matchTipo = filtroTipo === '' || t.tipo === filtroTipo;
-        const matchCat = filtroCategoria === '' || t.categoria === filtroCategoria;
-        const matchBusca = buscaTexto === '' ||
-            t.nome.toLowerCase().includes(buscaTexto.toLowerCase()) ||
-            (t.obs || '').toLowerCase().includes(buscaTexto.toLowerCase());
-        return matchMes && matchTipo && matchCat && matchBusca;
-    });
+  const busca = buscaTexto.trim().toLowerCase();
+
+  return transacoes.filter((t) => {
+    const data = new Date(t.data);
+    const mes = String(data.getMonth() + 1).padStart(2, "0");
+
+    return (
+      (filtroMes === "" || mes === filtroMes) &&
+      (filtroTipo === "" || t.tipo === filtroTipo) &&
+      (filtroCategoria === "" ||
+        String(t.categoriaId) === String(filtroCategoria)) &&
+      (busca === "" ||
+        String(t.nome || "")
+          .toLowerCase()
+          .includes(busca))
+    );
+  });
 }
 
 function renderizarLista() {
-    const lista = document.getElementById('lista-transacoes');
-    const filtradas = filtrarTransacoes();
-    const total = filtradas.length;
-    const inicio = (paginaAtual - 1) * porPagina;
-    const fim = Math.min(inicio + porPagina, total);
-    const pagina = filtradas.slice(inicio, fim);
+  const lista = document.getElementById("lista-transacoes");
 
-    lista.innerHTML = '';
+  if (!lista) return;
 
-    if (pagina.length === 0) {
-        lista.innerHTML = `
-            <div class="lista-vazia">
-                <div class="material-icons">search_off</div>
-                <p>Nenhuma transação encontrada com os filtros aplicados.</p>
-            </div>`;
-        document.getElementById('pag-info').textContent = 'Nenhuma transação';
-        return;
+  const filtradas = filtrarTransacoes();
+  const total = filtradas.length;
+  const inicio = (paginaAtual - 1) * porPagina;
+  const fim = Math.min(inicio + porPagina, total);
+  const pagina = filtradas.slice(inicio, fim);
+
+  lista.innerHTML = "";
+
+  if (!pagina.length) {
+    lista.innerHTML = `
+      <div class="lista-vazia">
+        <div class="material-icons">search_off</div>
+        <p>Nenhuma transação encontrada.</p>
+      </div>
+    `;
+
+    const pagInfo = document.getElementById("pag-info");
+
+    if (pagInfo) {
+      pagInfo.textContent = "Nenhuma transação";
     }
 
-    pagina.forEach(t => {
-        const icone = iconeCategoria[t.categoria] || 'receipt';
-        const cat = nomeCategoria[t.categoria] || t.categoria;
+    atualizarPaginacao(0);
+    return;
+  }
 
-        const row = document.createElement('div');
-        row.className = 'transacao-row';
-        row.innerHTML = `
-            <div class="transacao-desc">
-                <div class="transacao-icone ${t.tipo}">
-                    <span class="material-icons">${icone}</span>
-                </div>
-                <div>
-                    <div class="transacao-nome">${t.nome}</div>
-                    <div class="transacao-obs">${t.obs || ''}</div>
-                </div>
-            </div>
-            <div>
-                <span class="categoria-badge">
-                    <span class="material-icons" style="font-size:13px">${icone}</span>
-                    ${cat}
-                </span>
-            </div>
-            <div class="transacao-data">${formatarData(t.data)}</div>
-            <div>
-                <span class="metodo-badge">${t.metodo}</span>
-            </div>
-            <div class="transacao-valor ${t.tipo}">
-                ${t.tipo === 'receita' ? '+' : '-'} ${formatarMoeda(t.valor)}
-            </div>
-            <div class="transacao-acoes">
-                <button class="acao-btn editar" title="Editar" onclick="abrirEditar(${t.id})">
-                    <span class="material-icons">edit</span>
-                </button>
-                <button class="acao-btn excluir" title="Excluir" onclick="confirmarExcluir(${t.id})">
-                    <span class="material-icons">delete</span>
-                </button>
-            </div>
-        `;
-        lista.appendChild(row);
-    });
+  pagina.forEach((t) => {
+    const categoria = t.categoria || {};
+    const icone = iconeCategoria[chaveCategoria(categoria)] || "receipt";
 
-    document.getElementById('pag-info').textContent =
-        `Mostrando ${inicio + 1}–${fim} de ${total}`;
+    const row = document.createElement("div");
 
-    atualizarPaginacao(total);
+    row.className = "transacao-row";
+
+    row.innerHTML = `
+      <div class="transacao-desc">
+        <div class="transacao-icone ${t.tipo}">
+          <span class="material-icons">${icone}</span>
+        </div>
+
+        <div>
+          <div class="transacao-nome">${t.nome}</div>
+        </div>
+      </div>
+
+      <div>
+        <span class="categoria-badge">
+          <span class="material-icons" style="font-size:13px">
+            ${icone}
+          </span>
+          ${nomeCategoria(categoria)}
+        </span>
+      </div>
+
+      <div class="transacao-data">
+        ${formatarData(t.data)}
+      </div>
+
+      <div>
+        <span class="metodo-badge">
+          ${t.tipo === "receita" ? "Entrada" : "Saída"}
+        </span>
+      </div>
+
+      <div class="transacao-valor ${t.tipo}">
+        ${t.tipo === "receita" ? "+" : "-"}
+        ${formatarMoeda(t.valor)}
+      </div>
+
+      <div class="transacao-acoes">
+        <button
+          type="button"
+          class="acao-btn editar"
+          title="Editar"
+          onclick="abrirEditar(${t.id})"
+        >
+          <span class="material-icons">edit</span>
+        </button>
+
+        <button
+          type="button"
+          class="acao-btn excluir"
+          title="Excluir"
+          onclick="confirmarExcluir(${t.id})"
+        >
+          <span class="material-icons">delete</span>
+        </button>
+      </div>
+    `;
+
+    lista.appendChild(row);
+  });
+
+  const pagInfo = document.getElementById("pag-info");
+
+  if (pagInfo) {
+    pagInfo.textContent = `Mostrando ${inicio + 1}–${fim} de ${total}`;
+  }
+
+  atualizarPaginacao(total);
 }
 
 function atualizarPaginacao(total) {
-    const totalPaginas = Math.ceil(total / porPagina);
-    const botoes = document.querySelectorAll('.pag-btn[id^="pag-"]');
+  const totalPaginas = Math.ceil(total / porPagina);
 
-    botoes.forEach(btn => {
-        const num = parseInt(btn.id.split('-')[1]);
-        if (!isNaN(num)) {
-            if (num <= totalPaginas) {
-                btn.style.display = 'flex';
-                btn.textContent = num;
-                btn.classList.toggle('active', num === paginaAtual);
-            } else {
-                btn.style.display = 'none';
-            }
-        }
-    });
+  ["pag-1", "pag-2", "pag-3"].forEach((id) => {
+    const btn = document.getElementById(id);
 
-    document.getElementById('pag-anterior').disabled = paginaAtual <= 1;
-    document.getElementById('pag-proximo').disabled = paginaAtual >= totalPaginas;
+    if (!btn) return;
+
+    const numero = Number(id.split("-")[1]);
+
+    btn.style.display = numero <= totalPaginas ? "flex" : "none";
+    btn.classList.toggle("active", numero === paginaAtual);
+    btn.textContent = numero;
+  });
+
+  const anterior = document.getElementById("pag-anterior");
+  const proximo = document.getElementById("pag-proximo");
+
+  if (anterior) {
+    anterior.disabled = paginaAtual <= 1;
+  }
+
+  if (proximo) {
+    proximo.disabled = totalPaginas === 0 || paginaAtual >= totalPaginas;
+  }
 }
 
-document.getElementById('pag-anterior').addEventListener('click', () => {
-    if (paginaAtual > 1) { paginaAtual--; renderizarLista(); }
+document.getElementById("pag-anterior")?.addEventListener("click", () => {
+  if (paginaAtual > 1) {
+    paginaAtual--;
+    renderizarLista();
+  }
 });
-document.getElementById('pag-proximo').addEventListener('click', () => {
-    const total = Math.ceil(filtrarTransacoes().length / porPagina);
-    if (paginaAtual < total) { paginaAtual++; renderizarLista(); }
+
+document.getElementById("pag-proximo")?.addEventListener("click", () => {
+  const totalPaginas = Math.ceil(filtrarTransacoes().length / porPagina);
+
+  if (paginaAtual < totalPaginas) {
+    paginaAtual++;
+    renderizarLista();
+  }
 });
-['pag-1', 'pag-2', 'pag-3'].forEach(id => {
-    const btn = document.getElementById(id);
-    if (btn) btn.addEventListener('click', () => {
-        paginaAtual = parseInt(btn.textContent);
-        renderizarLista();
-    });
+
+["pag-1", "pag-2", "pag-3"].forEach((id) => {
+  document.getElementById(id)?.addEventListener("click", (e) => {
+    paginaAtual = Number(e.target.textContent);
+    renderizarLista();
+  });
 });
 
 function atualizarResumo() {
-    const filtradas = filtrarTransacoes();
-    const receitas = filtradas.filter(t => t.tipo === 'receita').reduce((s, t) => s + t.valor, 0);
-    const despesas = filtradas.filter(t => t.tipo === 'despesa').reduce((s, t) => s + t.valor, 0);
-    const saldo = receitas - despesas;
-    const qtdReceitas = filtradas.filter(t => t.tipo === 'receita').length;
-    const qtdDespesas = filtradas.filter(t => t.tipo === 'despesa').length;
+  const filtradas = filtrarTransacoes();
 
-    const cards = document.querySelectorAll('.resumo-valor');
-    const subs = document.querySelectorAll('.resumo-sub');
+  const receitas = filtradas
+    .filter((t) => t.tipo === "receita")
+    .reduce((total, t) => total + Number(t.valor || 0), 0);
 
-    if (cards[0]) cards[0].textContent = formatarMoeda(receitas);
-    if (cards[1]) cards[1].textContent = formatarMoeda(despesas);
-    if (cards[2]) cards[2].textContent = formatarMoeda(saldo);
-    if (cards[3]) cards[3].textContent = filtradas.length;
+  const despesas = filtradas
+    .filter((t) => t.tipo === "despesa")
+    .reduce((total, t) => total + Number(t.valor || 0), 0);
 
-    if (subs[1]) subs[1].textContent = receitas > 0
+  const qtdReceitas = filtradas.filter((t) => t.tipo === "receita").length;
+
+  const qtdDespesas = filtradas.filter((t) => t.tipo === "despesa").length;
+
+  const cards = document.querySelectorAll(".resumo-valor");
+  const subs = document.querySelectorAll(".resumo-sub");
+
+  if (cards[0]) cards[0].textContent = formatarMoeda(receitas);
+  if (cards[1]) cards[1].textContent = formatarMoeda(despesas);
+  if (cards[2]) cards[2].textContent = formatarMoeda(receitas - despesas);
+  if (cards[3]) cards[3].textContent = filtradas.length;
+
+  if (subs[1]) {
+    subs[1].textContent =
+      receitas > 0
         ? `${Math.round((despesas / receitas) * 100)}% da receita`
-        : '0% da receita';
-    if (subs[3]) subs[3].textContent = `${qtdReceitas} receitas · ${qtdDespesas} despesas`;
+        : "0% da receita";
+  }
+
+  if (subs[3]) {
+    subs[3].textContent = `${qtdReceitas} receitas · ${qtdDespesas} despesas`;
+  }
 }
 
-
-document.getElementById('filtro-mes').addEventListener('change', e => {
-    filtroMes = e.target.value;
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
+document.getElementById("filtro-mes")?.addEventListener("change", (e) => {
+  filtroMes = e.target.value;
+  paginaAtual = 1;
+  renderizarLista();
+  atualizarResumo();
 });
 
-document.getElementById('filtro-tipo').addEventListener('change', e => {
-    filtroTipo = e.target.value;
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
+document.getElementById("filtro-tipo")?.addEventListener("change", (e) => {
+  filtroTipo = e.target.value;
+  paginaAtual = 1;
+  renderizarLista();
+  atualizarResumo();
 });
 
-document.getElementById('filtro-categoria').addEventListener('change', e => {
-    filtroCategoria = e.target.value;
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
+document.getElementById("filtro-categoria")?.addEventListener("change", (e) => {
+  filtroCategoria = e.target.value;
+  paginaAtual = 1;
+  renderizarLista();
+  atualizarResumo();
 });
 
-document.getElementById('busca-input').addEventListener('input', e => {
-    buscaTexto = e.target.value;
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
+document.getElementById("busca-input")?.addEventListener("input", (e) => {
+  buscaTexto = e.target.value;
+  paginaAtual = 1;
+  renderizarLista();
+  atualizarResumo();
 });
 
-document.getElementById('btn-limpar-filtros').addEventListener('click', () => {
-    filtroTipo = '';
-    filtroMes = '';
-    filtroCategoria = '';
-    buscaTexto = '';
-    document.getElementById('filtro-mes').value = '';
-    document.getElementById('filtro-tipo').value = '';
-    document.getElementById('filtro-categoria').value = '';
-    document.getElementById('busca-input').value = '';
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.tab-btn[data-tab="todas"]').classList.add('active');
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
+document.getElementById("btn-limpar-filtros")?.addEventListener("click", () => {
+  filtroTipo = "";
+  filtroMes = "";
+  filtroCategoria = "";
+  buscaTexto = "";
+  paginaAtual = 1;
+
+  document.getElementById("filtro-mes").value = "";
+  document.getElementById("filtro-tipo").value = "";
+  document.getElementById("filtro-categoria").value = "";
+  document.getElementById("busca-input").value = "";
+
+  document.querySelectorAll(".tab-btn").forEach((btn) => {
+    btn.classList.remove("active");
+  });
+
+  document.querySelector('.tab-btn[data-tab="todas"]')?.classList.add("active");
+
+  renderizarLista();
+  atualizarResumo();
 });
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const tab = btn.dataset.tab;
-        filtroTipo = tab === 'todas' ? '' : tab === 'receitas' ? 'receita' : 'despesa';
-        document.getElementById('filtro-tipo').value = filtroTipo;
-        paginaAtual = 1;
-        renderizarLista();
-        atualizarResumo();
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".tab-btn").forEach((b) => {
+      b.classList.remove("active");
     });
-});
 
+    btn.classList.add("active");
+
+    const tab = btn.dataset.tab;
+
+    filtroTipo =
+      tab === "todas" ? "" : tab === "receitas" ? "receita" : "despesa";
+
+    document.getElementById("filtro-tipo").value = filtroTipo;
+
+    paginaAtual = 1;
+    renderizarLista();
+    atualizarResumo();
+  });
+});
 
 function abrirModal() {
-    document.getElementById('modal-overlay').classList.add('aberto');
-    document.getElementById('nova-data').value = new Date().toISOString().split('T')[0];
+  idEditando = null;
+
+  document.querySelector("#modal-overlay h2").textContent = "Nova Transação";
+
+  document.getElementById("btn-salvar").innerHTML = `
+    <span class="material-icons">check</span>
+    Salvar Transação
+  `;
+
+  document.getElementById("modal-overlay").classList.add("aberto");
+
+  document.getElementById("nova-data").value = new Date()
+    .toISOString()
+    .split("T")[0];
 }
 
 function fecharModal() {
-    document.getElementById('modal-overlay').classList.remove('aberto');
-    limparFormulario();
+  document.getElementById("modal-overlay").classList.remove("aberto");
+  idEditando = null;
+  limparFormulario();
 }
 
 function limparFormulario() {
-    document.getElementById('nova-descricao').value = '';
-    document.getElementById('nova-valor').value = '';
-    document.getElementById('nova-data').value = '';
-    document.getElementById('nova-categoria').value = '';
-    document.getElementById('nova-metodo').value = 'pix';
-    document.getElementById('nova-obs').value = '';
+  document.getElementById("nova-descricao").value = "";
+  document.getElementById("nova-valor").value = "";
+  document.getElementById("nova-data").value = "";
+  document.getElementById("nova-categoria").value = "";
+
+  tipoNova = "receita";
+
+  document.querySelectorAll(".modal-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tipo === "receita");
+  });
 }
 
-document.getElementById('btn-nova-transacao').addEventListener('click', abrirModal);
-document.getElementById('modal-fechar').addEventListener('click', fecharModal);
-document.getElementById('btn-cancelar').addEventListener('click', fecharModal);
+document
+  .getElementById("btn-nova-transacao")
+  ?.addEventListener("click", abrirModal);
 
-document.getElementById('modal-overlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modal-overlay')) fecharModal();
+document.getElementById("modal-fechar")?.addEventListener("click", fecharModal);
+
+document.getElementById("btn-cancelar")?.addEventListener("click", fecharModal);
+
+document.getElementById("modal-overlay")?.addEventListener("click", (e) => {
+  if (e.target.id === "modal-overlay") {
+    fecharModal();
+  }
 });
 
-document.querySelectorAll('.modal-tab').forEach(btn => {
-    btn.addEventListener('click', () => {
-        document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        tipoNova = btn.dataset.tipo;
+document.querySelectorAll(".modal-tab").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".modal-tab").forEach((b) => {
+      b.classList.remove("active");
     });
+
+    btn.classList.add("active");
+    tipoNova = btn.dataset.tipo;
+  });
 });
 
+document
+  .getElementById("btn-salvar")
+  ?.addEventListener("click", salvarTransacao);
 
-document.getElementById('btn-salvar').addEventListener('click', () => {
-    const nome = document.getElementById('nova-descricao').value.trim();
-    const valor = parseFloat(document.getElementById('nova-valor').value);
-    const data = document.getElementById('nova-data').value;
-    const categoria = document.getElementById('nova-categoria').value;
-    const metodo = document.getElementById('nova-metodo').value;
-    const obs = document.getElementById('nova-obs').value.trim();
+async function salvarTransacao() {
+  const descricao = document.getElementById("nova-descricao").value.trim();
 
-    if (!nome || !valor || !data || !categoria) {
-        alert('Por favor preencha todos os campos obrigatórios.');
-        return;
+  const valor = Number(document.getElementById("nova-valor").value);
+
+  const data = document.getElementById("nova-data").value;
+
+  const categoriaId = Number(document.getElementById("nova-categoria").value);
+
+  if (!descricao || !valor || !data || !categoriaId) {
+    alert("Preencha todos os campos obrigatórios.");
+    return;
+  }
+
+  const dados = {
+    descricao,
+    valor,
+    tipo: tipoNova === "receita" ? "ENTRADA" : "SAIDA",
+    categoriaId,
+    controleId: CONTROLE_ID,
+  };
+
+  try {
+    const url =
+      idEditando !== null
+        ? `${API_URL}/transacoes/atualizar/${idEditando}`
+        : `${API_URL}/transacoes/cadastrar`;
+
+    const resposta = await fetch(url, {
+      method: idEditando !== null ? "PUT" : "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dados),
+    });
+
+    const texto = await resposta.text();
+
+    let resultado = {};
+
+    try {
+      resultado = JSON.parse(texto);
+    } catch {}
+
+    if (!resposta.ok) {
+      throw new Error(
+        resultado.erro || resultado.detalhes || "Erro ao salvar transação",
+      );
     }
-
-    const metodoLabel = {
-        pix: 'PIX', debito: 'Débito', credito: 'Crédito',
-        dinheiro: 'Dinheiro', ted: 'TED/DOC'
-    };
-
-    transacoes.unshift({
-        id: proximoId++,
-        nome,
-        obs,
-        categoria,
-        tipo: tipoNova,
-        valor,
-        data,
-        metodo: metodoLabel[metodo] || metodo,
-    });
 
     fecharModal();
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
-});
-
+    await carregarTransacoes();
+  } catch (error) {
+    console.error("Erro ao salvar:", error);
+    alert("Erro ao salvar transação: " + error.message);
+  }
+}
 
 function abrirEditar(id) {
-    const t = transacoes.find(x => x.id === id);
-    if (!t) return;
+  const transacao = transacoes.find((t) => Number(t.id) === Number(id));
 
-    tipoNova = t.tipo;
-    document.querySelectorAll('.modal-tab').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.tipo === t.tipo);
-    });
+  if (!transacao) return;
 
-    document.getElementById('nova-descricao').value = t.nome;
-    document.getElementById('nova-valor').value = t.valor;
-    document.getElementById('nova-data').value = t.data;
-    document.getElementById('nova-categoria').value = t.categoria;
-    document.getElementById('nova-obs').value = t.obs || '';
+  idEditando = Number(id);
+  tipoNova = transacao.tipo;
 
-    const metodoMap = { 'PIX': 'pix', 'Débito': 'debito', 'Crédito': 'credito', 'Dinheiro': 'dinheiro', 'TED/DOC': 'ted' };
-    document.getElementById('nova-metodo').value = metodoMap[t.metodo] || 'pix';
+  document.querySelectorAll(".modal-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tipo === transacao.tipo);
+  });
 
-    document.getElementById('modal-overlay').classList.add('aberto');
+  document.getElementById("nova-descricao").value = transacao.nome || "";
 
-    const btnSalvar = document.getElementById('btn-salvar');
-    btnSalvar.onclick = () => {
-        t.nome = document.getElementById('nova-descricao').value.trim();
-        t.valor = parseFloat(document.getElementById('nova-valor').value);
-        t.data = document.getElementById('nova-data').value;
-        t.categoria = document.getElementById('nova-categoria').value;
-        t.obs = document.getElementById('nova-obs').value.trim();
-        t.tipo = tipoNova;
+  document.getElementById("nova-valor").value = transacao.valor || "";
 
-        const metodoLabel = {
-            pix: 'PIX', debito: 'Débito', credito: 'Crédito',
-            dinheiro: 'Dinheiro', ted: 'TED/DOC'
-        };
-        t.metodo = metodoLabel[document.getElementById('nova-metodo').value];
+  document.getElementById("nova-data").value = transacao.data
+    ? new Date(transacao.data).toISOString().split("T")[0]
+    : "";
 
-        fecharModal();
-        renderizarLista();
-        atualizarResumo();
+  document.getElementById("nova-categoria").value = transacao.categoriaId || "";
 
-        btnSalvar.onclick = null;
-        btnSalvar.addEventListener('click', salvarNova);
-    };
+  document.querySelector("#modal-overlay h2").textContent = "Editar Transação";
+
+  document.getElementById("btn-salvar").innerHTML = `
+    <span class="material-icons">check</span>
+    Salvar Alterações
+  `;
+
+  document.getElementById("modal-overlay").classList.add("aberto");
 }
-
-function salvarNova() {} 
-
 
 function confirmarExcluir(id) {
-    idExcluir = id;
-    const t = transacoes.find(x => x.id === id);
-    document.getElementById('excluir-nome-transacao').textContent = t ? t.nome : '';
-    document.getElementById('modal-excluir').classList.add('aberto');
+  idExcluir = Number(id);
+
+  const transacao = transacoes.find((t) => Number(t.id) === Number(id));
+
+  document.getElementById("excluir-nome-transacao").textContent =
+    transacao?.nome || "";
+
+  document.getElementById("modal-excluir").classList.add("aberto");
 }
 
-document.getElementById('excluir-fechar').addEventListener('click', () => {
-    document.getElementById('modal-excluir').classList.remove('aberto');
-    idExcluir = null;
-});
+function fecharExcluir() {
+  document.getElementById("modal-excluir").classList.remove("aberto");
+  idExcluir = null;
+}
 
-document.getElementById('btn-cancelar-excluir').addEventListener('click', () => {
-    document.getElementById('modal-excluir').classList.remove('aberto');
-    idExcluir = null;
-});
+document
+  .getElementById("excluir-fechar")
+  ?.addEventListener("click", fecharExcluir);
 
-document.getElementById('btn-confirmar-excluir').addEventListener('click', () => {
-    if (idExcluir !== null) {
-        transacoes = transacoes.filter(t => t.id !== idExcluir);
-        idExcluir = null;
-        document.getElementById('modal-excluir').classList.remove('aberto');
-        paginaAtual = 1;
-        renderizarLista();
-        atualizarResumo();
+document
+  .getElementById("btn-cancelar-excluir")
+  ?.addEventListener("click", fecharExcluir);
+
+document
+  .getElementById("btn-confirmar-excluir")
+  ?.addEventListener("click", async () => {
+    if (idExcluir === null) return;
+
+    try {
+      const resposta = await fetch(
+        `${API_URL}/transacoes/excluir/${idExcluir}`,
+        {
+          method: "DELETE",
+        },
+      );
+
+      const texto = await resposta.text();
+
+      let resultado = {};
+
+      try {
+        resultado = JSON.parse(texto);
+      } catch {}
+
+      if (!resposta.ok) {
+        throw new Error(
+          resultado.erro || resultado.detalhes || "Erro ao excluir",
+        );
+      }
+
+      fecharExcluir();
+      await carregarTransacoes();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao excluir: " + error.message);
     }
+  });
+
+const menuBtn = document.querySelector(".menu-btn");
+const aside = document.querySelector("aside");
+const closeBtn = document.getElementById("close-btn");
+
+menuBtn?.addEventListener("click", () => {
+  aside?.classList.add("aberta");
 });
 
+closeBtn?.addEventListener("click", () => {
+  aside?.classList.remove("aberta");
+});
 
-const menuBtn = document.querySelector('.menu-btn');
-const aside = document.querySelector('aside');
-const closeBtn = document.getElementById('close-btn');
-
-if (menuBtn) {
-    menuBtn.addEventListener('click', () => aside.classList.add('aberta'));
+async function iniciar() {
+  await carregarCategorias();
+  await carregarTransacoes();
 }
 
-if (closeBtn) {
-    closeBtn.addEventListener('click', () => aside.classList.remove('aberta'));
-}
-
-renderizarLista();
-atualizarResumo();
+iniciar();

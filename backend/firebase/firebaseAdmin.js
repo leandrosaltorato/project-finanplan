@@ -9,6 +9,6 @@ const app = initializeApp({
 
 const auth = getAuth(app);
 
-console.log("Firebase Admin conectado!");
+console.log("firebaseadmin conectado");
 
 module.exports = auth;

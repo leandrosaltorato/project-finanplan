@@ -202,7 +202,7 @@ async function cadastrarTransacao(event) {
   const controleId = Number(localStorage.getItem("controleId"));
 
   if (!controleId) {
-    alert("Controle financeiro não encontrado. Faça login novamente.");
+    alert("controle financeiro não encontrado faça login novamente");
     return;
   }
 
@@ -244,7 +244,7 @@ async function cadastrarTransacao(event) {
     alert("Transação cadastrada com sucesso!");
   } catch (error) {
     console.error("Erro ao cadastrar transação:", error);
-    alert("Não foi possível conectar ao servidor.");
+    alert("Não foi possível conectar ao servidor");
   }
 }
 
