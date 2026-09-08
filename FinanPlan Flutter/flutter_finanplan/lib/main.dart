@@ -39,27 +39,17 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-
-      // =========================================================
-      // MENU MOBILE
-      // =========================================================
       drawer: _buildMobileDrawer(),
-
       body: SafeArea(
         child: Column(
           children: [
             _buildMobileHeader(),
-
             Expanded(child: pages[selectedPage]),
           ],
         ),
       ),
     );
   }
-
-  // =============================================================
-  // HEADER MOBILE
-  // =============================================================
 
   Widget _buildMobileHeader() {
     return Container(
@@ -85,25 +75,19 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
               );
             },
           ),
-
           const SizedBox(width: 6),
-
           Image.asset(
-            'assets/logo pjts real.png',
+            'assets/logopjtsreal.png',
             width: 90,
             fit: BoxFit.contain,
           ),
-
           const Spacer(),
-
           const Icon(
             Icons.notifications_none_rounded,
             size: 23,
             color: AppColors.textSecondary,
           ),
-
           const SizedBox(width: 10),
-
           Container(
             width: 34,
             height: 34,
@@ -122,10 +106,6 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
     );
   }
 
-  // =============================================================
-  // DRAWER MOBILE
-  // =============================================================
-
   Widget _buildMobileDrawer() {
     return Drawer(
       width: 285,
@@ -133,63 +113,45 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
       child: SafeArea(
         child: Column(
           children: [
-            // -----------------------------------------------------
-            // LOGO
-            // -----------------------------------------------------
             Container(
               height: 82,
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 24),
               alignment: Alignment.centerLeft,
               child: Image.asset(
-                'assets/logo pjts real.png',
+                'assets/logopjtsreal.png',
                 width: 125,
                 fit: BoxFit.contain,
               ),
             ),
-
             const Divider(height: 1, color: AppColors.border),
-
             const SizedBox(height: 14),
-
-            // -----------------------------------------------------
-            // MENU
-            // -----------------------------------------------------
             _drawerItem(
               icon: Icons.dashboard_rounded,
               label: 'Dashboard',
               index: 0,
             ),
-
             _drawerItem(
               icon: Icons.swap_horiz_rounded,
               label: 'Transações',
               index: 1,
             ),
-
             _drawerItem(
               icon: Icons.account_balance_wallet_rounded,
               label: 'Orçamentos',
               index: 2,
             ),
-
             _drawerItem(
               icon: Icons.track_changes_rounded,
               label: 'Metas',
               index: 3,
             ),
-
             _drawerItem(
               icon: Icons.settings_rounded,
               label: 'Configurações',
               index: 4,
             ),
-
             const Spacer(),
-
-            // -----------------------------------------------------
-            // USUÁRIO
-            // -----------------------------------------------------
             Container(
               margin: const EdgeInsets.all(16),
               padding: const EdgeInsets.all(14),
@@ -211,9 +173,7 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
                       color: AppColors.greenDark,
                     ),
                   ),
-
                   const SizedBox(width: 11),
-
                   const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,10 +207,6 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
       ),
     );
   }
-
-  // =============================================================
-  // ITEM DO DRAWER
-  // =============================================================
 
   Widget _drawerItem({
     required IconData icon,
@@ -290,9 +246,7 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
                     ? AppColors.greenDark
                     : AppColors.textSecondary,
               ),
-
               const SizedBox(width: 15),
-
               Expanded(
                 child: Text(
                   label,
@@ -305,7 +259,6 @@ class _FinanPlanShellState extends State<FinanPlanShell> {
                   ),
                 ),
               ),
-
               if (isSelected)
                 Container(
                   width: 6,

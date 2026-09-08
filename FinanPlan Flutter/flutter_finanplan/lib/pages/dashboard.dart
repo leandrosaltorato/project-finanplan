@@ -26,12 +26,7 @@ class DashboardPage extends StatelessWidget {
             'Visão geral das suas finanças',
             style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
           ),
-
           const SizedBox(height: 18),
-
-          // =====================================================
-          // CARDS - 2 x 2
-          // =====================================================
           Row(
             children: [
               Expanded(
@@ -51,9 +46,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
           Row(
             children: [
               Expanded(
@@ -74,12 +67,7 @@ class DashboardPage extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 18),
-
-          // =====================================================
-          // TRANSAÇÕES RECENTES
-          // =====================================================
           Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 18, 12, 12),
@@ -108,7 +96,6 @@ class DashboardPage extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 const _Transaction(
                   title: 'Salário',
                   subtitle: 'Salário · 01 de mar.',
@@ -116,28 +103,24 @@ class DashboardPage extends StatelessWidget {
                   income: true,
                   icon: Icons.arrow_upward_rounded,
                 ),
-
                 const _Transaction(
                   title: 'Aluguel',
                   subtitle: 'Moradia · 02 de mar.',
                   value: '- R\$ 2.200',
                   icon: Icons.arrow_downward_rounded,
                 ),
-
                 const _Transaction(
                   title: 'Supermercado',
                   subtitle: 'Alimentação · 03 de mar.',
                   value: '- R\$ 650',
                   icon: Icons.arrow_downward_rounded,
                 ),
-
                 const _Transaction(
                   title: 'Uber',
                   subtitle: 'Transporte · 03 de mar.',
                   value: '- R\$ 120',
                   icon: Icons.arrow_downward_rounded,
                 ),
-
                 const _Transaction(
                   title: 'Netflix + Spotify',
                   subtitle: 'Lazer · 04 de mar.',
@@ -148,17 +131,12 @@ class DashboardPage extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 10),
         ],
       ),
     );
   }
 }
-
-// ===============================================================
-// CARD DE RESUMO
-// ===============================================================
 
 class _SummaryCard extends StatelessWidget {
   final String title;
@@ -199,9 +177,7 @@ class _SummaryCard extends StatelessWidget {
               fontWeight: FontWeight.w700,
             ),
           ),
-
           const SizedBox(height: 8),
-
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -214,9 +190,7 @@ class _SummaryCard extends StatelessWidget {
               ),
             ),
           ),
-
           const Spacer(),
-
           Text(
             footer,
             maxLines: 1,
@@ -234,10 +208,6 @@ class _SummaryCard extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// TRANSAÇÃO
-// ===============================================================
 
 class _Transaction extends StatelessWidget {
   final String title;
@@ -270,8 +240,6 @@ class _Transaction extends StatelessWidget {
       child: Row(
         children: [
           const SizedBox(width: 12),
-
-          // Ícone
           Container(
             width: 34,
             height: 34,
@@ -285,10 +253,7 @@ class _Transaction extends StatelessWidget {
               size: 19,
             ),
           ),
-
           const SizedBox(width: 10),
-
-          // Texto
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -317,10 +282,7 @@ class _Transaction extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(width: 8),
-
-          // Valor
           Flexible(
             child: Text(
               value,
@@ -336,7 +298,6 @@ class _Transaction extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(width: 12),
         ],
       ),

@@ -101,6 +101,10 @@ p {
     padding: 5px;
 }
 
+#visao{
+    padding: 5px 0px 10px 0px;
+}
+
 small {
     font-weight: 300;
     font-size: 0.77rem;
@@ -656,5 +660,3 @@ main aside .sidebar h4 {
         transform: scale(1);
     }
 }
-
-

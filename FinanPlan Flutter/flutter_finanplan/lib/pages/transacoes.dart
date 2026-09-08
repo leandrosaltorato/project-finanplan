@@ -13,9 +13,6 @@ class TransactionsPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // =====================================================
-          // CABEÇALHO
-          // =====================================================
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -44,10 +41,7 @@ class TransactionsPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               const SizedBox(width: 10),
-
-              // Botão nova transação
               Material(
                 color: AppColors.green,
                 borderRadius: BorderRadius.circular(9),
@@ -76,12 +70,7 @@ class TransactionsPage extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 18),
-
-          // =====================================================
-          // CARDS 2 x 2
-          // =====================================================
           Row(
             children: [
               Expanded(
@@ -103,9 +92,7 @@ class TransactionsPage extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 10),
-
           Row(
             children: [
               Expanded(
@@ -127,12 +114,7 @@ class TransactionsPage extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 18),
-
-          // =====================================================
-          // FILTROS
-          // =====================================================
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(12),
@@ -149,14 +131,9 @@ class TransactionsPage extends StatelessWidget {
                     Expanded(child: _Filter(text: 'Todos os tipos')),
                   ],
                 ),
-
                 const SizedBox(height: 8),
-
                 _Filter(text: 'Todas as categorias', fullWidth: true),
-
                 const SizedBox(height: 10),
-
-                // Busca
                 Container(
                   height: 40,
                   decoration: BoxDecoration(
@@ -183,12 +160,7 @@ class TransactionsPage extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(height: 12),
-
-          // =====================================================
-          // ABAS
-          // =====================================================
           Row(
             children: [
               const _Tab(text: 'Todas', selected: true),
@@ -198,26 +170,16 @@ class TransactionsPage extends StatelessWidget {
               const _Tab(text: 'Despesas'),
             ],
           ),
-
           const SizedBox(height: 12),
-
-          // =====================================================
-          // LISTA
-          // =====================================================
           const _TransactionList(),
-
           const SizedBox(height: 15),
-
-          // Paginação
           Row(
             children: [
               const Text(
                 'Mostrando 1–8 de 24',
                 style: TextStyle(fontSize: 10, color: AppColors.textSecondary),
               ),
-
               const Spacer(),
-
               const _PageButton(text: '<'),
               const _PageButton(text: '1', selected: true),
               const _PageButton(text: '2'),
@@ -230,10 +192,6 @@ class TransactionsPage extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// CARD DE INFORMAÇÃO
-// ===============================================================
 
 class _InfoCard extends StatelessWidget {
   final IconData icon;
@@ -271,9 +229,7 @@ class _InfoCard extends StatelessWidget {
             ),
             child: Icon(icon, color: Colors.white, size: 17),
           ),
-
           const Spacer(),
-
           Text(
             title,
             maxLines: 1,
@@ -284,9 +240,7 @@ class _InfoCard extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-
           const SizedBox(height: 2),
-
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
@@ -299,7 +253,6 @@ class _InfoCard extends StatelessWidget {
               ),
             ),
           ),
-
           Text(
             subtitle,
             maxLines: 1,
@@ -314,10 +267,6 @@ class _InfoCard extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// FILTRO
-// ===============================================================
 
 class _Filter extends StatelessWidget {
   final String text;
@@ -345,7 +294,6 @@ class _Filter extends StatelessWidget {
             color: AppColors.greenDark,
           ),
           const SizedBox(width: 5),
-
           Expanded(
             child: Text(
               text,
@@ -358,9 +306,7 @@ class _Filter extends StatelessWidget {
               ),
             ),
           ),
-
           const SizedBox(width: 4),
-
           const Icon(
             Icons.keyboard_arrow_down,
             size: 14,
@@ -371,10 +317,6 @@ class _Filter extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// ABAS
-// ===============================================================
 
 class _Tab extends StatelessWidget {
   final String text;
@@ -402,10 +344,6 @@ class _Tab extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// LISTA DE TRANSAÇÕES
-// ===============================================================
 
 class _TransactionList extends StatelessWidget {
   const _TransactionList();
@@ -474,16 +412,12 @@ class _TransactionList extends StatelessWidget {
     ];
 
     return Column(
-      children: transactions.map((transaction) {
-        return _TransactionCard(data: transaction);
-      }).toList(),
+      children: transactions
+          .map((transaction) => _TransactionCard(data: transaction))
+          .toList(),
     );
   }
 }
-
-// ===============================================================
-// DADOS DA TRANSAÇÃO
-// ===============================================================
 
 class _TransactionData {
   final String title;
@@ -503,10 +437,6 @@ class _TransactionData {
   });
 }
 
-// ===============================================================
-// CARD DA TRANSAÇÃO
-// ===============================================================
-
 class _TransactionCard extends StatelessWidget {
   final _TransactionData data;
 
@@ -525,7 +455,6 @@ class _TransactionCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Ícone
           Container(
             width: 36,
             height: 36,
@@ -543,10 +472,7 @@ class _TransactionCard extends StatelessWidget {
               color: data.income ? AppColors.success : AppColors.red,
             ),
           ),
-
           const SizedBox(width: 10),
-
-          // Informações
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -561,9 +487,7 @@ class _TransactionCard extends StatelessWidget {
                     color: AppColors.text,
                   ),
                 ),
-
                 const SizedBox(height: 3),
-
                 Text(
                   '${data.category} · ${data.date}',
                   maxLines: 1,
@@ -573,9 +497,7 @@ class _TransactionCard extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
-
                 const SizedBox(height: 2),
-
                 Text(
                   data.method,
                   style: const TextStyle(
@@ -587,10 +509,7 @@ class _TransactionCard extends StatelessWidget {
               ],
             ),
           ),
-
           const SizedBox(width: 7),
-
-          // Valor + ações
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -603,9 +522,7 @@ class _TransactionCard extends StatelessWidget {
                   color: data.income ? AppColors.success : AppColors.red,
                 ),
               ),
-
               const SizedBox(height: 5),
-
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -621,10 +538,6 @@ class _TransactionCard extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// BOTÃO DE AÇÃO
-// ===============================================================
 
 class _ActionButton extends StatelessWidget {
   final IconData icon;
@@ -644,10 +557,6 @@ class _ActionButton extends StatelessWidget {
     );
   }
 }
-
-// ===============================================================
-// PAGINAÇÃO
-// ===============================================================
 
 class _PageButton extends StatelessWidget {
   final String text;
