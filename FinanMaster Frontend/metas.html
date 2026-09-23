@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanPlan - Metas</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/metas.css">
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <img src="pictures/logo pjts real.png" class="logo" alt="FinanPlan">
+            <div class="search-bar">
+                <span class="material-icons">search</span>
+                <input type="search" placeholder="search">
+            </div>
+            <div class="profile-area">
+                <div class="theme-btn">
+                    <span class="material-icons">light_mode</span>
+                    <span class="material-icons">dark_mode</span>
+                </div>
+                <div class="profile">
+                    <div class="profile-photo">
+                        <img src="#" alt="">
+                    </div>
+                    <h5>Matheus Spineli</h5>
+                    <span class="material-icons">keyboard_arrow_down</span>
+                </div>
+                <button type="button" class="menu-btn">
+                    <span class="material-icons">menu</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <aside>
+            <button id="close-btn">
+                <span class="material-icons">close</span>
+            </button>
+            <div class="sidebar">
+                <a href="dashboard.html">
+                    <span class="material-icons">dashboard</span>
+                    <h4>Dashboard</h4>
+                </a>
+                <a href="transacoes.html">
+                    <span class="material-icons">sync_alt</span>
+                    <h4>Transações</h4>
+                </a>
+                <a href="#">
+                    <span class="material-icons">savings</span>
+                    <h4>Orçamentos</h4>
+                </a>
+                <a href="metas.html" class="active">
+                    <span class="material-icons">my_location</span>
+                    <h4>Metas</h4>
+                </a>
+                <a href="#">
+                    <span class="material-icons">settings</span>
+                    <h4>Configurações</h4>
+                </a>
+            </div>
+        </aside>
+
+        <div class="content">
+            <div class="page-header">
+                <div>
+                    <h1>Metas Financeiras</h1>
+                    <p>Acompanhe seus objetivos de economia</p>
+                </div>
+                <button class="btn-nova">
+                    <span class="material-icons">add</span>
+                    Nova Meta
+                </button>
+            </div>
+
+            <!-- RESUMO -->
+            <div class="resumo-grid metas-resumo-grid">
+                <div class="resumo-card">
+                    <div class="resumo-icon">
+                        <span class="material-icons">trending_up</span>
+                    </div>
+                    <div class="resumo-info">
+                        <span class="resumo-label">Total Economizado</span>
+                        <span class="resumo-valor">R$ 55.100,00</span>
+                        <span class="resumo-sub">de R$ 137.000,00</span>
+                    </div>
+                </div>
+
+                <div class="resumo-card saldo">
+                    <div class="resumo-icon">
+                        <span class="material-icons">track_changes</span>
+                    </div>
+                    <div class="resumo-info">
+                        <span class="resumo-label">Metas Ativas</span>
+                        <span class="resumo-valor">4</span>
+                    </div>
+                </div>
+
+                <div class="resumo-card qtd">
+                    <div class="resumo-icon">
+                        <span class="material-icons">emoji_events</span>
+                    </div>
+                    <div class="resumo-info">
+                        <span class="resumo-label">Concluídas</span>
+                        <span class="resumo-valor">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metas-grid">
+
+                <div class="meta-card">
+                    <div class="meta-topo">
+                        <div class="meta-icon-box">
+                            <span class="material-icons">shield</span>
+                        </div>
+                        <div class="meta-titulo">
+                            <h2>Reserva de Emergência</h2>
+                            <p>111 dias restantes</p>
+                        </div>
+                    </div>
+
+                    <div class="valores">
+                        <strong>R$ 18.500,00</strong>
+                        <span>R$ 30.000,00</span>
+                    </div>
+
+                    <div class="barra">
+                        <div class="progresso" style="width: 62%;"></div>
+                    </div>
+                    <div class="porcentagem">62%</div>
+
+                    <div class="botoes">
+                        <button>+R$100</button>
+                        <button>+R$500</button>
+                        <button>+R$1000</button>
+                    </div>
+                </div>
+
+
+                <div class="meta-card">
+                    <div class="meta-topo">
+                        <div class="meta-icon-box">
+                            <span class="material-icons">flight</span>
+                        </div>
+                        <div class="meta-titulo">
+                            <h2>Viagem Europa</h2>
+                            <p>263 dias restantes</p>
+                        </div>
+                    </div>
+
+                    <div class="valores">
+                        <strong>R$ 6.200,00</strong>
+                        <span>R$ 15.000,00</span>
+                    </div>
+
+                    <div class="barra">
+                        <div class="progresso" style="width: 41%;"></div>
+                    </div>
+                    <div class="porcentagem">41%</div>
+
+                    <div class="botoes">
+                        <button>+R$100</button>
+                        <button>+R$500</button>
+                        <button>+R$1000</button>
+                    </div>
+                </div>
+
+                <!-- META 3 -->
+                <div class="meta-card">
+                    <div class="meta-topo">
+                        <div class="meta-icon-box">
+                            <span class="material-icons">laptop_mac</span>
+                        </div>
+                        <div class="meta-titulo">
+                            <h2>MacBook Pro</h2>
+                            <p>0 dias restantes</p>
+                        </div>
+                    </div>
+
+                    <div class="valores">
+                        <strong>R$ 8.400,00</strong>
+                        <span>R$ 12.000,00</span>
+                    </div>
+
+                    <div class="barra">
+                        <div class="progresso" style="width: 70%;"></div>
+                    </div>
+                    <div class="porcentagem">70%</div>
+
+                    <div class="botoes">
+                        <button>+R$100</button>
+                        <button>+R$500</button>
+                        <button>+R$1000</button>
+                    </div>
+                </div>
+
+                <!-- META 4 -->
+                <div class="meta-card">
+                    <div class="meta-topo">
+                        <div class="meta-icon-box">
+                            <span class="material-icons">home</span>
+                        </div>
+                        <div class="meta-titulo">
+                            <h2>Entrada Apartamento</h2>
+                            <p>477 dias restantes</p>
+                        </div>
+                    </div>
+
+                    <div class="valores">
+                        <strong>R$ 22.000,00</strong>
+                        <span>R$ 80.000,00</span>
+                    </div>
+
+                    <div class="barra">
+                        <div class="progresso" style="width: 28%;"></div>
+                    </div>
+                    <div class="porcentagem">28%</div>
+
+                    <div class="botoes">
+                        <button>+R$100</button>
+                        <button>+R$500</button>
+                        <button>+R$1000</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
