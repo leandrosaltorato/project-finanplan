@@ -1,266 +1,244 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FinanPlan - Configurações</title>
 
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="stylesheet" href="styles/configuracoes.css">
-</head>
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/configuracoes.css" />
+  </head>
 
-<body>
-    <nav>
-        <div class="container">
-            <img src="pictures/logo pjts real.png" class="logo" alt="FinanPlan">
-            <div class="search-bar">
-                <span class="material-icons">search</span>
-                <input type="search" placeholder="search">
-            </div>
-            <div class="profile-area">
-                <div class="theme-btn">
-                    <span class="material-icons">light_mode</span>
-                    <span class="material-icons">dark_mode</span>
-                </div>
-                <div class="profile">
-                    <div class="profile-photo">
-                        <img src="#" alt="">
-                    </div>
-                    <h5>Matheus Spineli</h5>
-                    <span class="material-icons">keyboard_arrow_down</span>
-                </div>
-                <button type="button" class="menu-btn">
-                    <span class="material-icons">menu</span>
-                </button>
-            </div>
-        </div>
-    </nav>
+  <body>
+    <header id="site-header"></header>
 
     <main>
-        <aside>
-            <button id="close-btn">
-                <span class="material-icons">close</span>
-            </button>
-            <div class="sidebar">
-                <a href="dashboard.html">
-                    <span class="material-icons">dashboard</span>
-                    <h4>Dashboard</h4>
-                </a>
-                <a href="transacoes.html">
-                    <span class="material-icons">sync_alt</span>
-                    <h4>Transações</h4>
-                </a>
-                <a href="#">
-                    <span class="material-icons">savings</span>
-                    <h4>Orçamentos</h4>
-                </a>
-                <a href="metas.html">
-                    <span class="material-icons">my_location</span>
-                    <h4>Metas</h4>
-                </a>
-                <a href="configuracoes.html" class="active">
-                    <span class="material-icons">settings</span>
-                    <h4>Configurações</h4>
-                </a>
-            </div>
-        </aside>
-
-        <div class="content">
-            <div class="page-header">
-                <div>
-                    <h1>Configurações</h1>
-                    <p>Gerencie suas preferências e informações da conta</p>
-                </div>
-            </div>
-
-            <div class="config-grid">
-
-                <!-- PERFIL -->
-                <div class="config-card">
-                    <div class="config-card-header">
-                        <div class="config-icon-box">
-                            <span class="material-icons">person</span>
-                        </div>
-                        <div>
-                            <h2>Perfil</h2>
-                            <p>Suas informações pessoais</p>
-                        </div>
-                    </div>
-
-                    <div class="perfil-foto-area">
-                        <div class="perfil-foto">
-                            <img src="#" alt="">
-                        </div>
-                        <div>
-                            <button class="btn-secundario" type="button">Alterar foto</button>
-                            <p class="foto-hint">JPG ou PNG. Máximo 2MB.</p>
-                        </div>
-                    </div>
-
-                    <div class="form-linha">
-                        <div class="form-grupo">
-                            <label>Nome completo</label>
-                            <input type="text" value="Matheus Spineli">
-                        </div>
-                        <div class="form-grupo">
-                            <label>E-mail</label>
-                            <input type="email" value="matheus.spineli@email.com">
-                        </div>
-                    </div>
-
-                    <div class="form-linha">
-                        <div class="form-grupo">
-                            <label>Telefone</label>
-                            <input type="tel" placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="form-grupo">
-                            <label>Data de nascimento</label>
-                            <input type="date">
-                        </div>
-                    </div>
-
-                    <div class="config-card-footer">
-                        <button class="btn-salvar-config">
-                            <span class="material-icons">check</span>
-                            Salvar alterações
-                        </button>
-                    </div>
-                </div>
-
-                <!-- PREFERÊNCIAS -->
-                <div class="config-card">
-                    <div class="config-card-header">
-                        <div class="config-icon-box">
-                            <span class="material-icons">tune</span>
-                        </div>
-                        <div>
-                            <h2>Preferências</h2>
-                            <p>Personalize sua experiência</p>
-                        </div>
-                    </div>
-
-                    <div class="form-linha">
-                        <div class="form-grupo">
-                            <label>Moeda</label>
-                            <select>
-                                <option>Real (R$)</option>
-                                <option>Dólar (US$)</option>
-                                <option>Euro (€)</option>
-                            </select>
-                        </div>
-                        <div class="form-grupo">
-                            <label>Idioma</label>
-                            <select>
-                                <option>Português (BR)</option>
-                                <option>English</option>
-                                <option>Español</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="toggle-linha">
-                        <div class="toggle-info">
-                            <h4>Modo escuro</h4>
-                            <p>Ativar tema escuro na interface</p>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-linha">
-                        <div class="toggle-info">
-                            <h4>Notificações por e-mail</h4>
-                            <p>Receber resumo semanal das finanças</p>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-linha">
-                        <div class="toggle-info">
-                            <h4>Alertas de meta</h4>
-                            <p>Avisar quando uma meta estiver próxima do prazo</p>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" checked>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- SEGURANÇA -->
-                <div class="config-card">
-                    <div class="config-card-header">
-                        <div class="config-icon-box">
-                            <span class="material-icons">lock</span>
-                        </div>
-                        <div>
-                            <h2>Segurança</h2>
-                            <p>Altere sua senha de acesso</p>
-                        </div>
-                    </div>
-
-                    <div class="form-grupo">
-                        <label>Senha atual</label>
-                        <input type="password" placeholder="••••••••">
-                    </div>
-
-                    <div class="form-linha">
-                        <div class="form-grupo">
-                            <label>Nova senha</label>
-                            <input type="password" placeholder="••••••••">
-                        </div>
-                        <div class="form-grupo">
-                            <label>Confirmar nova senha</label>
-                            <input type="password" placeholder="••••••••">
-                        </div>
-                    </div>
-
-                    <div class="config-card-footer">
-                        <button class="btn-salvar-config">
-                            <span class="material-icons">check</span>
-                            Atualizar senha
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ZONA DE PERIGO -->
-                <div class="config-card perigo">
-                    <div class="config-card-header">
-                        <div class="config-icon-box perigo">
-                            <span class="material-icons">warning</span>
-                        </div>
-                        <div>
-                            <h2>Zona de Perigo</h2>
-                            <p>Ações permanentes na sua conta</p>
-                        </div>
-                    </div>
-
-                    <div class="perigo-linha">
-                        <div class="toggle-info">
-                            <h4>Excluir conta</h4>
-                            <p>Todos os seus dados serão apagados permanentemente</p>
-                        </div>
-                        <button class="btn-perigo">
-                            <span class="material-icons">delete_forever</span>
-                            Excluir conta
-                        </button>
-                    </div>
-                </div>
-
-            </div>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <h1>Configurações</h1>
+            <p>Gerencie suas preferências e informações da conta</p>
+          </div>
         </div>
+
+        <div class="config-grid">
+          <div class="config-card">
+            <div class="config-card-header">
+              <div class="config-icon-box">
+                <span class="material-icons">person</span>
+              </div>
+              <div>
+                <h2>Perfil</h2>
+                <p>Suas informações pessoais</p>
+              </div>
+            </div>
+
+            <div class="perfil-foto">
+              <img id="foto-config" src="" alt="Foto de perfil" />
+            </div>
+
+            <div>
+              <input
+                type="file"
+                id="input-foto"
+                accept="image/png, image/jpeg"
+                hidden
+              />
+
+              <button
+                class="btn-secundario"
+                id="btn-alterar-foto"
+                type="button"
+              >
+                Alterar foto
+              </button>
+
+              <p class="foto-hint">JPG ou PNG</p>
+            </div>
+
+            <div class="form-linha">
+              <div class="form-grupo">
+                <label>Nome completo</label>
+                <input type="text" id="nome" value="Matheus Spineli" />
+              </div>
+              <div class="form-grupo">
+                <label>E-mail</label>
+                <input
+                  type="email"
+                  id="email"
+                  value="matheus.spineli@email.com"
+                />
+              </div>
+            </div>
+
+            <div class="form-linha">
+              <div class="form-grupo">
+                <label>Telefone</label>
+                <input type="tel" id="telefone" placeholder="(00) 00000-0000" />
+              </div>
+              <div class="form-grupo">
+                <label>Data de nascimento</label>
+                <input type="date" />
+              </div>
+            </div>
+
+            <div class="config-card-footer">
+              <button
+                class="btn-salvar-config"
+                id="btn-salvar-perfil"
+                type="button"
+              >
+                <span class="material-icons">check</span>
+                Salvar alterações
+              </button>
+            </div>
+          </div>
+
+          <div class="config-card">
+            <div class="config-card-header">
+              <div class="config-icon-box">
+                <span class="material-icons">tune</span>
+              </div>
+              <div>
+                <h2>Preferências</h2>
+                <p>Personalize sua experiência</p>
+              </div>
+            </div>
+
+            <div class="form-linha">
+              <div class="form-grupo">
+                <label>Moeda</label>
+                <select>
+                  <option>Real (R$)</option>
+                  <option>Dólar (US$)</option>
+                  <option>Euro (€)</option>
+                </select>
+              </div>
+              <div class="form-grupo">
+                <label>Idioma</label>
+                <select>
+                  <option>Português (BR)</option>
+                  <option>English</option>
+                  <option>Español</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toggle-linha">
+              <div class="toggle-info">
+                <h4>Modo escuro</h4>
+                <p>Ativar tema escuro na interface</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="config-tema-toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-linha">
+              <div class="toggle-info">
+                <h4>Notificações por e-mail</h4>
+                <p>Receber resumo semanal das finanças</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-linha">
+              <div class="toggle-info">
+                <h4>Alertas de meta</h4>
+                <p>Avisar quando uma meta estiver próxima do prazo</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="config-card">
+            <div class="config-card-header">
+              <div class="config-icon-box">
+                <span class="material-icons">lock</span>
+              </div>
+              <div>
+                <h2>Segurança</h2>
+                <p>Altere sua senha de acesso</p>
+              </div>
+            </div>
+
+            <div class="form-grupo">
+              <label>Senha atual</label>
+              <input type="password" id="senha-atual" placeholder="••••••••" />
+            </div>
+
+            <div class="form-linha">
+              <div class="form-grupo">
+                <label>Nova senha</label>
+                <input type="password" id="nova-senha" placeholder="••••••••" />
+              </div>
+              <div class="form-grupo">
+                <label>Confirmar nova senha</label>
+                <input
+                  type="password"
+                  id="confirmar-senha"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <div class="config-card-footer">
+              <button
+                class="btn-salvar-config"
+                id="btn-atualizar-senha"
+                type="button"
+              >
+                <span class="material-icons">check</span>
+                Atualizar senha
+              </button>
+            </div>
+          </div>
+
+          <div class="config-card perigo">
+            <div class="config-card-header">
+              <div class="config-icon-box perigo">
+                <span class="material-icons">warning</span>
+              </div>
+              <div>
+                <h2>Zona de Perigo</h2>
+                <p>Ações permanentes na sua conta</p>
+              </div>
+            </div>
+
+            <div class="perigo-linha">
+              <div class="toggle-info">
+                <h4>Excluir conta</h4>
+                <p>Todos os seus dados serão apagados permanentemente</p>
+              </div>
+              <button class="btn-perigo" id="btn-excluir-conta" type="button">
+                <span class="material-icons">delete_forever</span>
+                Excluir conta
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
-</body>
-
+    <script type="module" src="scripts/header.js"></script>
+    <script type="module" src="scripts/configuracoes.js"></script>
+  </body>
 </html>

@@ -1,213 +1,652 @@
 const API_URL = "http://localhost:3000";
-const CONTROLE_ID = 1;
+
+document.addEventListener("DOMContentLoaded", () => {
+  iniciarPagina();
+});
 
 let transacoes = [];
-let categorias = [];
-
 let paginaAtual = 1;
-const porPagina = 8;
+let transacaoParaExcluir = null;
+let tipoAtual = "ENTRADA";
 
-let filtroTipo = "";
-let filtroMes = "";
-let filtroCategoria = "";
-let buscaTexto = "";
+const itensPorPagina = 10;
 
-let tipoNova = "receita";
-let idExcluir = null;
-let idEditando = null;
-
-const iconeCategoria = {
-  ALIMENTACAO: "restaurant",
-  LAZER: "sports_esports",
-  EDUCACAO: "school",
-  TRANSPORTE: "directions_car",
-  SAUDE: "favorite",
-  OUTROS: "receipt",
-  SALARIO: "work",
-  FREELANCE: "laptop",
-  MORADIA: "home",
-  ASSINATURA: "subscriptions",
+const categoriasPadrao = {
+  ENTRADA: ["Salário", "Freelance", "Investimentos", "Bonificação", "Outros"],
+  SAIDA: [
+    "Moradia",
+    "Alimentação",
+    "Transporte",
+    "Saúde",
+    "Educação",
+    "Lazer",
+    "Compras",
+    "Contas",
+    "Outros",
+  ],
 };
 
-function formatarMoeda(valor) {
-  return Number(valor || 0).toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
+const nomesMetodos = {
+  pix: "PIX",
+  debito: "Débito",
+  credito: "Crédito",
+  dinheiro: "Dinheiro",
+  ted: "TED/DOC",
+};
+
+function iniciarPagina() {
+  const usuarioId = localStorage.getItem("usuarioId");
+
+  if (!usuarioId) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  configurarSidebar();
+  configurarEventos();
+  carregarCategorias();
+  carregarTransacoes();
+}
+
+function configurarSidebar() {
+  const pagina = location.pathname.split("/").pop();
+
+  document.querySelectorAll(".sidebar a").forEach((link) => {
+    const href = link.getAttribute("href");
+
+    if (href === pagina) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
+
+  const nomeUsuario = localStorage.getItem("nomeUsuario");
+  const fotoPerfil = localStorage.getItem("fotoPerfil");
+  const tipoLogin = localStorage.getItem("tipoLogin");
+
+  const nomeElemento = document.getElementById("nome-usuario");
+  const fotoElemento = document.getElementById("foto-perfil");
+  const containerFoto = document.querySelector(".profile-photo");
+
+  if (nomeElemento) {
+    nomeElemento.textContent = nomeUsuario || "Usuário";
+  }
+
+  if (containerFoto && fotoElemento) {
+    if (tipoLogin === "google" && fotoPerfil) {
+      fotoElemento.src = fotoPerfil;
+      containerFoto.style.display = "block";
+    } else {
+      fotoElemento.removeAttribute("src");
+      containerFoto.style.display = "none";
+    }
+  }
+}
+
+function configurarEventos() {
+  const btnNova = document.getElementById("btn-nova-transacao");
+  const btnFecharModal = document.getElementById("modal-fechar");
+  const btnCancelar = document.getElementById("btn-cancelar");
+
+  const btnFecharExcluir = document.getElementById("excluir-fechar");
+  const btnCancelarExcluir = document.getElementById("btn-cancelar-excluir");
+  const btnConfirmarExcluir = document.getElementById("btn-confirmar-excluir");
+
+  const btnSalvar = document.getElementById("btn-salvar");
+
+  const modal = document.getElementById("modal-overlay");
+  const modalExcluir = document.getElementById("modal-excluir");
+
+  const filtroMes = document.getElementById("filtro-mes");
+  const filtroTipo = document.getElementById("filtro-tipo");
+  const filtroCategoria = document.getElementById("filtro-categoria");
+  const buscaInput = document.getElementById("busca-input");
+  const btnLimparFiltros = document.getElementById("btn-limpar-filtros");
+
+  if (btnNova) {
+    btnNova.addEventListener("click", abrirModal);
+  }
+
+  if (btnFecharModal) {
+    btnFecharModal.addEventListener("click", fecharModal);
+  }
+
+  if (btnCancelar) {
+    btnCancelar.addEventListener("click", fecharModal);
+  }
+
+  if (btnSalvar) {
+    btnSalvar.addEventListener("click", salvarNovaTransacao);
+  }
+
+  if (btnFecharExcluir) {
+    btnFecharExcluir.addEventListener("click", fecharModalExcluir);
+  }
+
+  if (btnCancelarExcluir) {
+    btnCancelarExcluir.addEventListener("click", fecharModalExcluir);
+  }
+
+  if (btnConfirmarExcluir) {
+    btnConfirmarExcluir.addEventListener("click", excluirTransacao);
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        fecharModal();
+      }
+    });
+  }
+
+  if (modalExcluir) {
+    modalExcluir.addEventListener("click", (event) => {
+      if (event.target === modalExcluir) {
+        fecharModalExcluir();
+      }
+    });
+  }
+
+  document.querySelectorAll(".modal-tab").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      tipoAtual = tab.dataset.tipo === "despesa" ? "SAIDA" : "ENTRADA";
+
+      document.querySelectorAll(".modal-tab").forEach((item) => {
+        item.classList.toggle("active", item === tab);
+      });
+
+      atualizarCategorias();
+    });
+  });
+
+  document.querySelectorAll(".tab-btn").forEach((tab) => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      tab.classList.add("active");
+
+      paginaAtual = 1;
+
+      renderizarTransacoes();
+    });
+  });
+
+  [filtroMes, filtroTipo, filtroCategoria].forEach((filtro) => {
+    if (!filtro) return;
+
+    filtro.addEventListener("change", () => {
+      paginaAtual = 1;
+      atualizarResumo();
+      renderizarTransacoes();
+    });
+  });
+
+  if (buscaInput) {
+    buscaInput.addEventListener("input", () => {
+      paginaAtual = 1;
+      renderizarTransacoes();
+    });
+  }
+
+  if (btnLimparFiltros) {
+    btnLimparFiltros.addEventListener("click", limparFiltros);
+  }
+
+  const lista = document.getElementById("lista-transacoes");
+
+  if (lista) {
+    lista.addEventListener("click", (event) => {
+      const botaoExcluir = event.target.closest(".acao-btn.excluir");
+
+      if (!botaoExcluir) return;
+
+      const id = botaoExcluir.dataset.id;
+
+      const transacao = transacoes.find(
+        (item) => String(item.id) === String(id),
+      );
+
+      if (transacao) {
+        abrirModalExcluir(transacao);
+      }
+    });
+  }
+
+  const pagAnterior = document.getElementById("pag-anterior");
+  const pagProximo = document.getElementById("pag-proximo");
+
+  if (pagAnterior) {
+    pagAnterior.addEventListener("click", () => {
+      if (paginaAtual <= 1) return;
+
+      paginaAtual--;
+      renderizarTransacoes();
+    });
+  }
+
+  if (pagProximo) {
+    pagProximo.addEventListener("click", () => {
+      const total = obterTransacoesFiltradas().length;
+      const totalPaginas = Math.max(1, Math.ceil(total / itensPorPagina));
+
+      if (paginaAtual >= totalPaginas) return;
+
+      paginaAtual++;
+      renderizarTransacoes();
+    });
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const botao = document.getElementById(`pag-${i}`);
+
+    if (!botao) continue;
+
+    botao.addEventListener("click", () => {
+      const total = obterTransacoesFiltradas().length;
+      const totalPaginas = Math.max(1, Math.ceil(total / itensPorPagina));
+
+      if (i > totalPaginas) return;
+
+      paginaAtual = i;
+      renderizarTransacoes();
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+
+    fecharModal();
+    fecharModalExcluir();
   });
 }
 
-function formatarData(data) {
-  if (!data) return "";
+async function carregarTransacoes() {
+  try {
+    const controleId = localStorage.getItem("controleId");
 
-  const dataObj = new Date(data);
+    if (!controleId) {
+      alert("Controle financeiro não encontrado. Faça login novamente.");
+      window.location.href = "index.html";
+      return;
+    }
 
-  if (Number.isNaN(dataObj.getTime())) return "";
+    const response = await fetch(
+      `${API_URL}/transacoes/listar?controleId=${controleId}`,
+    );
 
-  const meses = [
-    "jan",
-    "fev",
-    "mar",
-    "abr",
-    "mai",
-    "jun",
-    "jul",
-    "ago",
-    "set",
-    "out",
-    "nov",
-    "dez",
-  ];
+    const resultado = await response.json();
 
-  return `${String(dataObj.getDate()).padStart(2, "0")} de ${meses[dataObj.getMonth()]}.`;
+    if (!response.ok) {
+      throw new Error(
+        resultado.detalhes ||
+          resultado.erro ||
+          `Erro na API: ${response.status}`,
+      );
+    }
+
+    transacoes = Array.isArray(resultado)
+      ? resultado
+      : resultado.transacoes || [];
+
+    transacoes = transacoes.map(normalizarTransacao);
+
+    atualizarResumo();
+    renderizarTransacoes();
+  } catch (error) {
+    console.error("Erro ao carregar transações:", error);
+
+    transacoes = [];
+
+    atualizarResumo();
+    renderizarTransacoes();
+
+    alert("Não foi possível carregar as transações.");
+  }
 }
 
-function nomeCategoria(categoria) {
-  return String(categoria?.nome || categoria?.tipo || "Outros");
-}
-
-function chaveCategoria(categoria) {
-  return nomeCategoria(categoria).toUpperCase();
-}
-
-function converterTransacao(transacao) {
+function normalizarTransacao(transacao) {
   return {
     ...transacao,
-    nome: transacao.descricao || "",
-    tipo: transacao.tipo === "ENTRADA" ? "receita" : "despesa",
-    categoriaId: transacao.categoriaId,
-    categoria: transacao.categoria || null,
+
+    tipo: String(transacao.tipo || "").toUpperCase(),
+
+    valor: Number(transacao.valor || 0),
+
+    categoria:
+      typeof transacao.categoria === "object"
+        ? transacao.categoria
+        : {
+            nome: transacao.categoria || "Sem categoria",
+          },
   };
 }
 
 async function carregarCategorias() {
   try {
-    const resposta = await fetch(`${API_URL}/categoria/listar`);
+    const response = await fetch(`${API_URL}/categoria/listar`);
 
-    if (!resposta.ok) {
-      throw new Error("Erro ao buscar categorias");
+    const resultado = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        resultado.detalhes ||
+          resultado.erro ||
+          `Erro na API: ${response.status}`,
+      );
     }
 
-    categorias = await resposta.json();
+    const categorias = Array.isArray(resultado)
+      ? resultado
+      : resultado.categorias || [];
 
-    preencherCategorias();
+    preencherFiltroCategorias(categorias);
+    preencherCategoriasModal(categorias);
   } catch (error) {
     console.error("Erro ao carregar categorias:", error);
+
+    preencherFiltroCategorias([]);
+    atualizarCategorias();
   }
 }
 
-function preencherCategorias() {
-  const select = document.getElementById("nova-categoria");
-  const filtro = document.getElementById("filtro-categoria");
+function preencherFiltroCategorias(categorias) {
+  const select = document.getElementById("filtro-categoria");
 
-  if (select) {
-    select.innerHTML = `<option value="">Selecione uma categoria</option>`;
+  if (!select) return;
 
-    categorias.forEach((categoria) => {
-      const option = document.createElement("option");
-      option.value = categoria.id;
-      option.textContent = nomeCategoria(categoria);
-      select.appendChild(option);
-    });
-  }
+  const valorAtual = select.value;
 
-  if (filtro) {
-    filtro.innerHTML = `<option value="">Todas as categorias</option>`;
+  select.innerHTML = `
+    <option value="">Todas as categorias</option>
+  `;
 
-    categorias.forEach((categoria) => {
-      const option = document.createElement("option");
-      option.value = categoria.id;
-      option.textContent = nomeCategoria(categoria);
-      filtro.appendChild(option);
-    });
-  }
-}
+  categorias.forEach((categoria) => {
+    const option = document.createElement("option");
 
-async function carregarTransacoes() {
-  try {
-    const resposta = await fetch(`${API_URL}/transacoes/listar`);
+    option.value = categoria.id;
+    option.textContent = categoria.nome;
 
-    if (!resposta.ok) {
-      throw new Error("Erro ao buscar transações");
-    }
-
-    const dados = await resposta.json();
-
-    transacoes = Array.isArray(dados) ? dados.map(converterTransacao) : [];
-
-    paginaAtual = 1;
-
-    renderizarLista();
-    atualizarResumo();
-  } catch (error) {
-    console.error(error);
-
-    const lista = document.getElementById("lista-transacoes");
-
-    if (lista) {
-      lista.innerHTML = `
-        <div class="lista-vazia">
-          <div class="material-icons">error</div>
-          <p>Não foi possível carregar as transações.</p>
-        </div>
-      `;
-    }
-  }
-}
-
-function filtrarTransacoes() {
-  const busca = buscaTexto.trim().toLowerCase();
-
-  return transacoes.filter((t) => {
-    const data = new Date(t.data);
-    const mes = String(data.getMonth() + 1).padStart(2, "0");
-
-    return (
-      (filtroMes === "" || mes === filtroMes) &&
-      (filtroTipo === "" || t.tipo === filtroTipo) &&
-      (filtroCategoria === "" ||
-        String(t.categoriaId) === String(filtroCategoria)) &&
-      (busca === "" ||
-        String(t.nome || "")
-          .toLowerCase()
-          .includes(busca))
-    );
+    select.appendChild(option);
   });
+
+  if ([...select.options].some((option) => option.value === valorAtual)) {
+    select.value = valorAtual;
+  }
 }
 
-function renderizarLista() {
+function preencherCategoriasModal(categorias) {
+  const select = document.getElementById("nova-categoria");
+
+  if (!select) return;
+
+  select.innerHTML = `
+    <option value="">Selecione uma categoria</option>
+  `;
+
+  categorias.forEach((categoria) => {
+    const option = document.createElement("option");
+
+    option.value = categoria.id;
+    option.textContent = categoria.nome;
+
+    select.appendChild(option);
+  });
+
+  if (categorias.length === 0) {
+    atualizarCategorias();
+  }
+}
+
+function atualizarCategorias() {
+  const select = document.getElementById("nova-categoria");
+
+  if (!select) return;
+
+  const valorAtual = select.value;
+
+  select.innerHTML = `
+    <option value="">Selecione uma categoria</option>
+  `;
+
+  const lista = categoriasPadrao[tipoAtual] || [];
+
+  lista.forEach((nome) => {
+    const option = document.createElement("option");
+
+    option.value = nome;
+    option.textContent = nome;
+
+    select.appendChild(option);
+  });
+
+  select.value = valorAtual;
+}
+
+async function salvarNovaTransacao() {
+  const descricao = document.getElementById("nova-descricao")?.value.trim();
+
+  const valor = Number(document.getElementById("nova-valor")?.value);
+
+  const data = document.getElementById("nova-data")?.value;
+
+  const categoriaId = Number(document.getElementById("nova-categoria")?.value);
+
+  const metodo = document.getElementById("nova-metodo")?.value || null;
+
+  const observacao = document.getElementById("nova-obs")?.value.trim() || null;
+
+  const controleId = Number(localStorage.getItem("controleId"));
+
+  if (!controleId) {
+    alert("Controle financeiro não encontrado. Faça login novamente.");
+    return;
+  }
+
+  if (!descricao) {
+    alert("Digite a descrição da transação.");
+    return;
+  }
+
+  if (!valor || valor <= 0) {
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  if (!data) {
+    alert("Selecione a data da transação.");
+    return;
+  }
+
+  if (!categoriaId) {
+    alert("Selecione uma categoria.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/transacoes/cadastrar`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        descricao,
+        valor,
+        data,
+        tipo: tipoAtual,
+        categoriaId,
+        controleId,
+        metodo,
+        observacao,
+      }),
+    });
+
+    const resultado = await response.json();
+
+    if (!response.ok) {
+      alert(
+        resultado.detalhes || resultado.erro || "Erro ao cadastrar transação.",
+      );
+      return;
+    }
+
+    fecharModal();
+
+    limparFormulario();
+
+    await carregarTransacoes();
+
+    alert("Transação cadastrada com sucesso!");
+  } catch (error) {
+    console.error("Erro ao cadastrar transação:", error);
+    alert("Não foi possível conectar ao servidor.");
+  }
+}
+
+async function excluirTransacao() {
+  if (!transacaoParaExcluir) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/transacoes/excluir/${transacaoParaExcluir.id}`,
+      {
+        method: "DELETE",
+      },
+    );
+
+    const resultado = await response.json();
+
+    if (!response.ok) {
+      alert(
+        resultado.detalhes || resultado.erro || "Erro ao excluir transação.",
+      );
+      return;
+    }
+
+    fecharModalExcluir();
+
+    await carregarTransacoes();
+
+    alert("Transação excluída com sucesso!");
+  } catch (error) {
+    console.error("Erro ao excluir transação:", error);
+    alert("Não foi possível conectar ao servidor.");
+  }
+}
+
+function obterTransacoesFiltradas() {
+  const filtroMes = document.getElementById("filtro-mes");
+  const filtroTipo = document.getElementById("filtro-tipo");
+  const filtroCategoria = document.getElementById("filtro-categoria");
+  const buscaInput = document.getElementById("busca-input");
+
+  const mes = filtroMes?.value || "";
+  const tipo = filtroTipo?.value || "";
+  const categoria = filtroCategoria?.value || "";
+  const busca = buscaInput?.value.trim().toLowerCase() || "";
+
+  const tabAtiva =
+    document.querySelector(".tab-btn.active")?.dataset.tab || "todas";
+
+  return transacoes
+    .filter((transacao) => {
+      if (mes) {
+        const data = String(transacao.data || "");
+
+        if (data.substring(5, 7) !== mes) {
+          return false;
+        }
+      }
+
+      if (tipo && transacao.tipo !== tipo) {
+        return false;
+      }
+
+      if (categoria) {
+        const categoriaTransacao =
+          transacao.categoria?.id || transacao.categoriaId || "";
+
+        if (String(categoriaTransacao) !== String(categoria)) {
+          return false;
+        }
+      }
+
+      if (tabAtiva === "receitas" && transacao.tipo !== "ENTRADA") {
+        return false;
+      }
+
+      if (tabAtiva === "despesas" && transacao.tipo !== "SAIDA") {
+        return false;
+      }
+
+      if (busca) {
+        const texto = `
+          ${transacao.descricao || ""}
+          ${transacao.categoria?.nome || ""}
+          ${transacao.metodo || ""}
+          ${transacao.observacao || ""}
+        `.toLowerCase();
+
+        if (!texto.includes(busca)) {
+          return false;
+        }
+      }
+
+      return true;
+    })
+    .sort((a, b) => {
+      return String(b.data || "").localeCompare(String(a.data || ""));
+    });
+}
+
+function renderizarTransacoes() {
   const lista = document.getElementById("lista-transacoes");
+  const pagInfo = document.getElementById("pag-info");
 
   if (!lista) return;
 
-  const filtradas = filtrarTransacoes();
-  const total = filtradas.length;
-  const inicio = (paginaAtual - 1) * porPagina;
-  const fim = Math.min(inicio + porPagina, total);
+  const filtradas = obterTransacoesFiltradas();
+
+  const totalPaginas = Math.max(
+    1,
+    Math.ceil(filtradas.length / itensPorPagina),
+  );
+
+  if (paginaAtual > totalPaginas) {
+    paginaAtual = totalPaginas;
+  }
+
+  const inicio = (paginaAtual - 1) * itensPorPagina;
+  const fim = inicio + itensPorPagina;
+
   const pagina = filtradas.slice(inicio, fim);
 
   lista.innerHTML = "";
 
-  if (!pagina.length) {
+  if (pagina.length === 0) {
     lista.innerHTML = `
       <div class="lista-vazia">
-        <div class="material-icons">search_off</div>
+        <span class="material-icons">receipt_long</span>
         <p>Nenhuma transação encontrada.</p>
       </div>
     `;
-
-    const pagInfo = document.getElementById("pag-info");
 
     if (pagInfo) {
       pagInfo.textContent = "Nenhuma transação";
     }
 
     atualizarPaginacao(0);
+
     return;
   }
 
-  pagina.forEach((t) => {
-    const categoria = t.categoria || {};
-    const icone = iconeCategoria[chaveCategoria(categoria)] || "receipt";
+  pagina.forEach((transacao) => {
+    const entrada = transacao.tipo === "ENTRADA";
+
+    const categoria =
+      transacao.categoria?.nome || transacao.categoriaNome || "Sem categoria";
 
     const row = document.createElement("div");
 
@@ -215,54 +654,47 @@ function renderizarLista() {
 
     row.innerHTML = `
       <div class="transacao-desc">
-        <div class="transacao-icone ${t.tipo}">
-          <span class="material-icons">${icone}</span>
+        <div class="transacao-icone ${entrada ? "receita" : "despesa"}">
+          <span class="material-icons">
+            ${entrada ? "arrow_upward" : "arrow_downward"}
+          </span>
         </div>
 
         <div>
-          <div class="transacao-nome">${t.nome}</div>
+          <div class="transacao-nome">
+            ${escaparHTML(transacao.descricao)}
+          </div>
         </div>
       </div>
 
       <div>
         <span class="categoria-badge">
-          <span class="material-icons" style="font-size:13px">
-            ${icone}
-          </span>
-          ${nomeCategoria(categoria)}
+          ${escaparHTML(categoria)}
         </span>
       </div>
 
       <div class="transacao-data">
-        ${formatarData(t.data)}
+        ${formatarData(transacao.data)}
       </div>
 
       <div>
         <span class="metodo-badge">
-          ${t.tipo === "receita" ? "Entrada" : "Saída"}
+          ${escaparHTML(
+            nomesMetodos[transacao.metodo] || transacao.metodo || "-",
+          )}
         </span>
       </div>
 
-      <div class="transacao-valor ${t.tipo}">
-        ${t.tipo === "receita" ? "+" : "-"}
-        ${formatarMoeda(t.valor)}
+      <div class="transacao-valor ${entrada ? "receita" : "despesa"}">
+        ${entrada ? "+" : "-"} ${formatarMoeda(transacao.valor)}
       </div>
 
       <div class="transacao-acoes">
         <button
-          type="button"
-          class="acao-btn editar"
-          title="Editar"
-          onclick="abrirEditar(${t.id})"
-        >
-          <span class="material-icons">edit</span>
-        </button>
-
-        <button
-          type="button"
           class="acao-btn excluir"
+          type="button"
+          data-id="${transacao.id}"
           title="Excluir"
-          onclick="confirmarExcluir(${t.id})"
         >
           <span class="material-icons">delete</span>
         </button>
@@ -272,400 +704,259 @@ function renderizarLista() {
     lista.appendChild(row);
   });
 
-  const pagInfo = document.getElementById("pag-info");
+  const primeiro = inicio + 1;
+  const ultimo = Math.min(fim, filtradas.length);
 
   if (pagInfo) {
-    pagInfo.textContent = `Mostrando ${inicio + 1}–${fim} de ${total}`;
+    pagInfo.textContent = `Mostrando ${primeiro}-${ultimo} de ${filtradas.length}`;
   }
 
-  atualizarPaginacao(total);
+  atualizarPaginacao(totalPaginas);
 }
 
-function atualizarPaginacao(total) {
-  const totalPaginas = Math.ceil(total / porPagina);
+function atualizarPaginacao(totalPaginas) {
+  const pagAnterior = document.getElementById("pag-anterior");
+  const pagProximo = document.getElementById("pag-proximo");
 
-  ["pag-1", "pag-2", "pag-3"].forEach((id) => {
-    const btn = document.getElementById(id);
-
-    if (!btn) return;
-
-    const numero = Number(id.split("-")[1]);
-
-    btn.style.display = numero <= totalPaginas ? "flex" : "none";
-    btn.classList.toggle("active", numero === paginaAtual);
-    btn.textContent = numero;
-  });
-
-  const anterior = document.getElementById("pag-anterior");
-  const proximo = document.getElementById("pag-proximo");
-
-  if (anterior) {
-    anterior.disabled = paginaAtual <= 1;
+  if (pagAnterior) {
+    pagAnterior.disabled = paginaAtual <= 1;
   }
 
-  if (proximo) {
-    proximo.disabled = totalPaginas === 0 || paginaAtual >= totalPaginas;
+  if (pagProximo) {
+    pagProximo.disabled = paginaAtual >= totalPaginas;
+  }
+
+  for (let i = 1; i <= 3; i++) {
+    const botao = document.getElementById(`pag-${i}`);
+
+    if (!botao) continue;
+
+    botao.style.display = i <= totalPaginas ? "flex" : "none";
+
+    botao.classList.toggle("active", i === paginaAtual);
+
+    botao.disabled = i > totalPaginas;
   }
 }
-
-document.getElementById("pag-anterior")?.addEventListener("click", () => {
-  if (paginaAtual > 1) {
-    paginaAtual--;
-    renderizarLista();
-  }
-});
-
-document.getElementById("pag-proximo")?.addEventListener("click", () => {
-  const totalPaginas = Math.ceil(filtrarTransacoes().length / porPagina);
-
-  if (paginaAtual < totalPaginas) {
-    paginaAtual++;
-    renderizarLista();
-  }
-});
-
-["pag-1", "pag-2", "pag-3"].forEach((id) => {
-  document.getElementById(id)?.addEventListener("click", (e) => {
-    paginaAtual = Number(e.target.textContent);
-    renderizarLista();
-  });
-});
 
 function atualizarResumo() {
-  const filtradas = filtrarTransacoes();
+  const filtroMes = document.getElementById("filtro-mes");
+  const mesSelecionado = filtroMes?.value || "";
 
-  const receitas = filtradas
-    .filter((t) => t.tipo === "receita")
-    .reduce((total, t) => total + Number(t.valor || 0), 0);
+  let dados = transacoes;
 
-  const despesas = filtradas
-    .filter((t) => t.tipo === "despesa")
-    .reduce((total, t) => total + Number(t.valor || 0), 0);
-
-  const qtdReceitas = filtradas.filter((t) => t.tipo === "receita").length;
-
-  const qtdDespesas = filtradas.filter((t) => t.tipo === "despesa").length;
-
-  const cards = document.querySelectorAll(".resumo-valor");
-  const subs = document.querySelectorAll(".resumo-sub");
-
-  if (cards[0]) cards[0].textContent = formatarMoeda(receitas);
-  if (cards[1]) cards[1].textContent = formatarMoeda(despesas);
-  if (cards[2]) cards[2].textContent = formatarMoeda(receitas - despesas);
-  if (cards[3]) cards[3].textContent = filtradas.length;
-
-  if (subs[1]) {
-    subs[1].textContent =
-      receitas > 0
-        ? `${Math.round((despesas / receitas) * 100)}% da receita`
-        : "0% da receita";
+  if (mesSelecionado) {
+    dados = dados.filter((transacao) => {
+      return (
+        transacao.data &&
+        String(transacao.data).substring(5, 7) === mesSelecionado
+      );
+    });
   }
 
-  if (subs[3]) {
-    subs[3].textContent = `${qtdReceitas} receitas · ${qtdDespesas} despesas`;
+  const receitas = dados.filter((transacao) => transacao.tipo === "ENTRADA");
+
+  const despesas = dados.filter((transacao) => transacao.tipo === "SAIDA");
+
+  const valorReceitas = receitas.reduce(
+    (total, transacao) => total + Number(transacao.valor || 0),
+    0,
+  );
+
+  const valorDespesas = despesas.reduce(
+    (total, transacao) => total + Number(transacao.valor || 0),
+    0,
+  );
+
+  const saldo = valorReceitas - valorDespesas;
+
+  atualizarElemento("total-receitas", formatarMoeda(valorReceitas));
+
+  atualizarElemento("total-despesas", formatarMoeda(valorDespesas));
+
+  atualizarElemento("saldo-mes", formatarMoeda(saldo));
+
+  atualizarElemento("total-transacoes", dados.length);
+
+  const subReceitas = document.getElementById("sub-receitas");
+
+  const subDespesas = document.getElementById("sub-despesas");
+
+  const subTransacoes = document.getElementById("sub-transacoes");
+
+  if (subReceitas) {
+    subReceitas.textContent = `${receitas.length} ${
+      receitas.length === 1 ? "receita" : "receitas"
+    }`;
+  }
+
+  if (subDespesas) {
+    const percentual =
+      valorReceitas > 0 ? (valorDespesas / valorReceitas) * 100 : 0;
+
+    subDespesas.textContent = `${percentual.toFixed(0)}% da receita`;
+  }
+
+  if (subTransacoes) {
+    subTransacoes.textContent = `${receitas.length} receitas · ${despesas.length} despesas`;
   }
 }
 
-document.getElementById("filtro-mes")?.addEventListener("change", (e) => {
-  filtroMes = e.target.value;
-  paginaAtual = 1;
-  renderizarLista();
-  atualizarResumo();
-});
-
-document.getElementById("filtro-tipo")?.addEventListener("change", (e) => {
-  filtroTipo = e.target.value;
-  paginaAtual = 1;
-  renderizarLista();
-  atualizarResumo();
-});
-
-document.getElementById("filtro-categoria")?.addEventListener("change", (e) => {
-  filtroCategoria = e.target.value;
-  paginaAtual = 1;
-  renderizarLista();
-  atualizarResumo();
-});
-
-document.getElementById("busca-input")?.addEventListener("input", (e) => {
-  buscaTexto = e.target.value;
-  paginaAtual = 1;
-  renderizarLista();
-  atualizarResumo();
-});
-
-document.getElementById("btn-limpar-filtros")?.addEventListener("click", () => {
-  filtroTipo = "";
-  filtroMes = "";
-  filtroCategoria = "";
-  buscaTexto = "";
-  paginaAtual = 1;
-
-  document.getElementById("filtro-mes").value = "";
-  document.getElementById("filtro-tipo").value = "";
-  document.getElementById("filtro-categoria").value = "";
-  document.getElementById("busca-input").value = "";
-
-  document.querySelectorAll(".tab-btn").forEach((btn) => {
-    btn.classList.remove("active");
-  });
-
-  document.querySelector('.tab-btn[data-tab="todas"]')?.classList.add("active");
-
-  renderizarLista();
-  atualizarResumo();
-});
-
-document.querySelectorAll(".tab-btn").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".tab-btn").forEach((b) => {
-      b.classList.remove("active");
-    });
-
-    btn.classList.add("active");
-
-    const tab = btn.dataset.tab;
-
-    filtroTipo =
-      tab === "todas" ? "" : tab === "receitas" ? "receita" : "despesa";
-
-    document.getElementById("filtro-tipo").value = filtroTipo;
-
-    paginaAtual = 1;
-    renderizarLista();
-    atualizarResumo();
-  });
-});
-
 function abrirModal() {
-  idEditando = null;
+  const modal = document.getElementById("modal-overlay");
 
-  document.querySelector("#modal-overlay h2").textContent = "Nova Transação";
+  if (!modal) return;
 
-  document.getElementById("btn-salvar").innerHTML = `
-    <span class="material-icons">check</span>
-    Salvar Transação
-  `;
+  limparFormulario();
 
-  document.getElementById("modal-overlay").classList.add("aberto");
+  tipoAtual = "ENTRADA";
 
-  document.getElementById("nova-data").value = new Date()
-    .toISOString()
-    .split("T")[0];
+  document.querySelectorAll(".modal-tab").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.tipo === "receita");
+  });
+
+  const inputData = document.getElementById("nova-data");
+
+  if (inputData) {
+    const hoje = new Date();
+
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+
+    inputData.value = `${ano}-${mes}-${dia}`;
+  }
+
+  modal.classList.add("aberto");
+
+  atualizarCategorias();
+
+  const inputDescricao = document.getElementById("nova-descricao");
+
+  if (inputDescricao) {
+    setTimeout(() => inputDescricao.focus(), 100);
+  }
 }
 
 function fecharModal() {
-  document.getElementById("modal-overlay").classList.remove("aberto");
-  idEditando = null;
-  limparFormulario();
+  const modal = document.getElementById("modal-overlay");
+
+  if (modal) {
+    modal.classList.remove("aberto");
+  }
+}
+
+function abrirModalExcluir(transacao) {
+  transacaoParaExcluir = transacao;
+
+  const nome = document.getElementById("excluir-nome-transacao");
+
+  if (nome) {
+    nome.textContent = transacao.descricao || "";
+  }
+
+  const modal = document.getElementById("modal-excluir");
+
+  if (modal) {
+    modal.classList.add("aberto");
+  }
+}
+
+function fecharModalExcluir() {
+  const modal = document.getElementById("modal-excluir");
+
+  if (modal) {
+    modal.classList.remove("aberto");
+  }
+
+  transacaoParaExcluir = null;
 }
 
 function limparFormulario() {
-  document.getElementById("nova-descricao").value = "";
-  document.getElementById("nova-valor").value = "";
-  document.getElementById("nova-data").value = "";
-  document.getElementById("nova-categoria").value = "";
+  const campos = ["nova-descricao", "nova-valor", "nova-data", "nova-obs"];
 
-  tipoNova = "receita";
+  campos.forEach((id) => {
+    const elemento = document.getElementById(id);
 
-  document.querySelectorAll(".modal-tab").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.tipo === "receita");
-  });
-}
-
-document
-  .getElementById("btn-nova-transacao")
-  ?.addEventListener("click", abrirModal);
-
-document.getElementById("modal-fechar")?.addEventListener("click", fecharModal);
-
-document.getElementById("btn-cancelar")?.addEventListener("click", fecharModal);
-
-document.getElementById("modal-overlay")?.addEventListener("click", (e) => {
-  if (e.target.id === "modal-overlay") {
-    fecharModal();
-  }
-});
-
-document.querySelectorAll(".modal-tab").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll(".modal-tab").forEach((b) => {
-      b.classList.remove("active");
-    });
-
-    btn.classList.add("active");
-    tipoNova = btn.dataset.tipo;
-  });
-});
-
-document
-  .getElementById("btn-salvar")
-  ?.addEventListener("click", salvarTransacao);
-
-async function salvarTransacao() {
-  const descricao = document.getElementById("nova-descricao").value.trim();
-
-  const valor = Number(document.getElementById("nova-valor").value);
-
-  const data = document.getElementById("nova-data").value;
-
-  const categoriaId = Number(document.getElementById("nova-categoria").value);
-
-  if (!descricao || !valor || !data || !categoriaId) {
-    alert("Preencha todos os campos obrigatórios.");
-    return;
-  }
-
-  const dados = {
-    descricao,
-    valor,
-    tipo: tipoNova === "receita" ? "ENTRADA" : "SAIDA",
-    categoriaId,
-    controleId: CONTROLE_ID,
-  };
-
-  try {
-    const url =
-      idEditando !== null
-        ? `${API_URL}/transacoes/atualizar/${idEditando}`
-        : `${API_URL}/transacoes/cadastrar`;
-
-    const resposta = await fetch(url, {
-      method: idEditando !== null ? "PUT" : "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(dados),
-    });
-
-    const texto = await resposta.text();
-
-    let resultado = {};
-
-    try {
-      resultado = JSON.parse(texto);
-    } catch {}
-
-    if (!resposta.ok) {
-      throw new Error(
-        resultado.erro || resultado.detalhes || "Erro ao salvar transação",
-      );
-    }
-
-    fecharModal();
-    await carregarTransacoes();
-  } catch (error) {
-    console.error("Erro ao salvar:", error);
-    alert("Erro ao salvar transação: " + error.message);
-  }
-}
-
-function abrirEditar(id) {
-  const transacao = transacoes.find((t) => Number(t.id) === Number(id));
-
-  if (!transacao) return;
-
-  idEditando = Number(id);
-  tipoNova = transacao.tipo;
-
-  document.querySelectorAll(".modal-tab").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.tipo === transacao.tipo);
-  });
-
-  document.getElementById("nova-descricao").value = transacao.nome || "";
-
-  document.getElementById("nova-valor").value = transacao.valor || "";
-
-  document.getElementById("nova-data").value = transacao.data
-    ? new Date(transacao.data).toISOString().split("T")[0]
-    : "";
-
-  document.getElementById("nova-categoria").value = transacao.categoriaId || "";
-
-  document.querySelector("#modal-overlay h2").textContent = "Editar Transação";
-
-  document.getElementById("btn-salvar").innerHTML = `
-    <span class="material-icons">check</span>
-    Salvar Alterações
-  `;
-
-  document.getElementById("modal-overlay").classList.add("aberto");
-}
-
-function confirmarExcluir(id) {
-  idExcluir = Number(id);
-
-  const transacao = transacoes.find((t) => Number(t.id) === Number(id));
-
-  document.getElementById("excluir-nome-transacao").textContent =
-    transacao?.nome || "";
-
-  document.getElementById("modal-excluir").classList.add("aberto");
-}
-
-function fecharExcluir() {
-  document.getElementById("modal-excluir").classList.remove("aberto");
-  idExcluir = null;
-}
-
-document
-  .getElementById("excluir-fechar")
-  ?.addEventListener("click", fecharExcluir);
-
-document
-  .getElementById("btn-cancelar-excluir")
-  ?.addEventListener("click", fecharExcluir);
-
-document
-  .getElementById("btn-confirmar-excluir")
-  ?.addEventListener("click", async () => {
-    if (idExcluir === null) return;
-
-    try {
-      const resposta = await fetch(
-        `${API_URL}/transacoes/excluir/${idExcluir}`,
-        {
-          method: "DELETE",
-        },
-      );
-
-      const texto = await resposta.text();
-
-      let resultado = {};
-
-      try {
-        resultado = JSON.parse(texto);
-      } catch {}
-
-      if (!resposta.ok) {
-        throw new Error(
-          resultado.erro || resultado.detalhes || "Erro ao excluir",
-        );
-      }
-
-      fecharExcluir();
-      await carregarTransacoes();
-    } catch (error) {
-      console.error(error);
-      alert("Erro ao excluir: " + error.message);
+    if (elemento) {
+      elemento.value = "";
     }
   });
 
-const menuBtn = document.querySelector(".menu-btn");
-const aside = document.querySelector("aside");
-const closeBtn = document.getElementById("close-btn");
+  const metodo = document.getElementById("nova-metodo");
 
-menuBtn?.addEventListener("click", () => {
-  aside?.classList.add("aberta");
-});
-
-closeBtn?.addEventListener("click", () => {
-  aside?.classList.remove("aberta");
-});
-
-async function iniciar() {
-  await carregarCategorias();
-  await carregarTransacoes();
+  if (metodo) {
+    metodo.value = "";
+  }
 }
 
-iniciar();
+function limparFiltros() {
+  const filtroMes = document.getElementById("filtro-mes");
+  const filtroTipo = document.getElementById("filtro-tipo");
+  const filtroCategoria = document.getElementById("filtro-categoria");
+  const buscaInput = document.getElementById("busca-input");
+
+  if (filtroMes) filtroMes.value = "";
+  if (filtroTipo) filtroTipo.value = "";
+  if (filtroCategoria) filtroCategoria.value = "";
+  if (buscaInput) buscaInput.value = "";
+
+  document.querySelectorAll(".tab-btn").forEach((tab) => {
+    tab.classList.toggle("active", tab.dataset.tab === "todas");
+  });
+
+  paginaAtual = 1;
+
+  atualizarResumo();
+  renderizarTransacoes();
+}
+
+function formatarMoeda(valor) {
+  return Number(valor || 0).toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
+
+function formatarData(data) {
+  if (!data) {
+    return "-";
+  }
+
+  const valor = String(data);
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+    const [ano, mes, dia] = valor.split("-");
+
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  const dataObj = new Date(data);
+
+  if (Number.isNaN(dataObj.getTime())) {
+    return valor;
+  }
+
+  return dataObj.toLocaleDateString("pt-BR");
+}
+
+function atualizarElemento(id, valor) {
+  const elemento = document.getElementById(id);
+
+  if (elemento) {
+    elemento.textContent = valor;
+  }
+}
+
+function escaparHTML(texto) {
+  if (texto === null || texto === undefined) {
+    return "";
+  }
+
+  return String(texto)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
