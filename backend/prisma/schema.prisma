@@ -39,6 +39,7 @@ model Controle {
   previsoes  PrevisaoSaldo[]
   lembretes  Lembretes[]
   metas      Meta[]
+  orcamentos Orcamento[]
 }
 
 model UsuariosControles {
@@ -75,6 +76,21 @@ model Categoria {
   tipo       TIPO_CATEGORIA
   cor        String
   transacoes Transacoes[]
+  orcamentos Orcamento[]
+}
+
+model Orcamento {
+  id       Int      @id @default(autoincrement())
+  limite   Float
+  criadoEm DateTime @default(now())
+
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  categoriaId Int
+
+  controle   Controle @relation(fields: [controleId], references: [id])
+  controleId Int
+
+  @@unique([controleId, categoriaId])
 }
 
 enum TIPO_CATEGORIA {

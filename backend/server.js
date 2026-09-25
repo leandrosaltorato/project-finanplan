@@ -9,7 +9,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Rotas
 const lembretesRoutes = require("./src/routes/lembretes.routes");
 app.use("/lembretes", lembretesRoutes);
 
@@ -42,6 +41,9 @@ app.use("/metas", metasRoutes);
 
 const configRoutes = require("./src/routes/config.routes");
 app.use("/config", configRoutes);
+
+const orcamentosRoutes = require("./src/routes/orcamentos.routes");
+app.use("/orcamentos", orcamentosRoutes);
 
 app.listen(process.env.PORT_APP, () => {
   console.log("Online na porta " + process.env.PORT_APP);

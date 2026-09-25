@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+
+    <title>Login | FinanPlan</title>
+  </head>
+
+  <body>
+
+    <div class="formulario">
+      <div class="logo">
+        <h1>FinanPlan</h1>
+      </div>
+
+      <p class="subtitulo">Controle suas finanças de forma simples</p>
+
+      <form id="login-form">
+        <div class="caixa-formulario">
+          <input
+            type="email"
+            id="email"
+            placeholder="E-mail"
+            autocomplete="email"
+            required
+          />
+
+          <i class="bx bx-envelope"></i>
+        </div>
+
+        <div class="caixa-formulario">
+          <input
+            type="password"
+            id="senha"
+            placeholder="Senha"
+            autocomplete="current-password"
+            required
+          />
+
+          <i class="bx bx-lock-alt"></i>
+        </div>
+
+        <div class="caixa-lembrar-esqueci">
+          <label>
+            <input type="checkbox" id="lembrar" />
+
+            Lembrar de mim
+          </label>
+
+          <a href="#" id="esqueci-senha"> Esqueceu sua senha? </a>
+        </div>
+
+        <button type="submit" id="botao-entrar">Entrar</button>
+
+        <div class="separador">
+          <span>OU</span>
+        </div>
+
+        <button type="button" id="google-login" class="botao-google">
+          <i class="bx bxl-google"></i>
+
+          <span>Continuar com Google</span>
+        </button>
+
+        <div class="link-registro">
+          <p>
+            Ainda não possui uma conta?
+            <a href="#" id="registrar"> Criar conta </a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>

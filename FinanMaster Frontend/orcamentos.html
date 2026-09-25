@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinanPlan - Orçamentos</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/orcamentos.css" />
+  </head>
+
+  <body>
+    <header id="site-header"></header>
+
+    <main>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <h1>Orçamentos</h1>
+            <p>Defina limites por categoria e acompanhe seus gastos do mês</p>
+          </div>
+
+          <button class="btn-nova" id="btn-novo-orcamento" type="button">
+            <span class="material-icons">add</span>
+            Novo Orçamento
+          </button>
+        </div>
+
+        <div class="resumo-grid">
+          <div class="resumo-card">
+            <div class="resumo-icon">
+              <span class="material-icons">account_balance_wallet</span>
+            </div>
+            <div class="resumo-info">
+              <span class="resumo-label">Orçamento Total</span>
+              <span class="resumo-valor" id="orcamento-total">R$ 0,00</span>
+            </div>
+          </div>
+
+          <div class="resumo-card saldo">
+            <div class="resumo-icon">
+              <span class="material-icons">payments</span>
+            </div>
+            <div class="resumo-info">
+              <span class="resumo-label">Total Gasto no Mês</span>
+              <span class="resumo-valor" id="orcamento-gasto">R$ 0,00</span>
+            </div>
+          </div>
+
+          <div class="resumo-card qtd">
+            <div class="resumo-icon">
+              <span class="material-icons">savings</span>
+            </div>
+            <div class="resumo-info">
+              <span class="resumo-label">Restante</span>
+              <span class="resumo-valor" id="orcamento-restante">R$ 0,00</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="orcamento-painel">
+          <div class="grafico-card">
+            <h2>Gastos por categoria (mês atual)</h2>
+
+            <div class="grafico-wrapper">
+              <canvas id="grafico-orcamento"></canvas>
+            </div>
+
+            <p class="grafico-vazio" id="grafico-vazio">
+              Nenhum gasto registrado neste mês ainda.
+            </p>
+          </div>
+
+          <div class="orcamentos-lista" id="orcamentos-lista"></div>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-overlay" id="modal-orcamento">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Novo Orçamento</h2>
+
+          <button
+            class="modal-fechar"
+            id="modal-orcamento-fechar"
+            type="button"
+          >
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <form class="modal-body" id="form-orcamento">
+          <div class="form-grupo">
+            <label for="orcamento-categoria">Categoria</label>
+            <select id="orcamento-categoria" required>
+              <option value="">Selecione uma categoria</option>
+            </select>
+          </div>
+
+          <div class="form-grupo">
+            <label for="orcamento-valor">Limite mensal (R$)</label>
+            <input
+              type="number"
+              id="orcamento-valor"
+              step="0.01"
+              min="0.01"
+              placeholder="0,00"
+              required
+            />
+          </div>
+
+          <div class="modal-footer">
+            <button
+              class="btn-cancelar"
+              id="btn-cancelar-orcamento"
+              type="button"
+            >
+              Cancelar
+            </button>
+
+            <button class="btn-salvar" type="submit">
+              <span class="material-icons">check</span>
+              Salvar Orçamento
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="scripts/header.js"></script>
+    <script type="module" src="scripts/orcamentos.js"></script>
+  </body>
+</html>
