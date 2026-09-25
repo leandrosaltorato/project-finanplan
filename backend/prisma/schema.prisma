@@ -38,6 +38,7 @@ model Controle {
   transacoes Transacoes[]
   previsoes  PrevisaoSaldo[]
   lembretes  Lembretes[]
+  metas      Meta[]
 }
 
 model UsuariosControles {
@@ -113,6 +114,20 @@ model Lembretes {
 
   usuario   Usuarios @relation(fields: [usuarioId], references: [id])
   usuarioId Int
+
+  controle   Controle @relation(fields: [controleId], references: [id])
+  controleId Int
+}
+
+model Meta {
+  id         Int       @id @default(autoincrement())
+  titulo     String
+  descricao  String?
+  icone      String    @default("flag")
+  valorAtual Float     @default(0)
+  valorAlvo  Float
+  dataLimite DateTime?
+  criadoEm   DateTime  @default(now())
 
   controle   Controle @relation(fields: [controleId], references: [id])
   controleId Int
