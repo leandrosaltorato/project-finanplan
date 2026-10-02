@@ -538,8 +538,12 @@ function obterTransacoesFiltradas() {
         }
       }
 
-      if (tipo && transacao.tipo !== tipo) {
-        return false;
+      if (tipo) {
+        const tipoEsperado = tipo === "receita" ? "ENTRADA" : "SAIDA";
+
+        if (transacao.tipo !== tipoEsperado) {
+          return false;
+        }
       }
 
       if (categoria) {
@@ -763,7 +767,7 @@ function atualizarResumo() {
 
   atualizarElemento("saldo-mes", formatarMoeda(saldo));
 
-  atualizarElemento("total-transacoes", dados.length);
+  atualizarElemento("qtd-transacoes", dados.length);
 
   const subReceitas = document.getElementById("sub-receitas");
   const subDespesas = document.getElementById("sub-despesas");
