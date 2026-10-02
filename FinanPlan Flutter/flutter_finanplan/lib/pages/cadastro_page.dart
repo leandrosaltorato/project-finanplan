@@ -31,7 +31,9 @@ class _CadastroPageState extends State<CadastroPage> {
   }
 
   Future<void> cadastrar() async {
-    if (nome.text.trim().isEmpty || email.text.trim().isEmpty || senha.text.isEmpty) {
+    if (nome.text.trim().isEmpty ||
+        email.text.trim().isEmpty ||
+        senha.text.isEmpty) {
       mensagem('Preencha os campos obrigatórios.');
       return;
     }
@@ -41,9 +43,18 @@ class _CadastroPageState extends State<CadastroPage> {
     }
     setState(() => carregando = true);
     try {
-      await auth.cadastrar(nome.text.trim(), email.text.trim(), senha.text, telefone.text.trim());
+      await auth.cadastrar(
+        nome.text.trim(),
+        email.text.trim(),
+        senha.text,
+        telefone.text.trim(),
+      );
       if (!mounted) return;
-      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const ShellPage()), (_) => false);
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const ShellPage()),
+        (_) => false,
+      );
     } on ApiException catch (e) {
       mensagem(e.mensagem);
     } finally {
@@ -70,22 +81,80 @@ class _CadastroPageState extends State<CadastroPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Text('FinanPlan', style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppTheme.text)),
+                    Text(
+                      'FinanPlan',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: AppTheme.textoPrimary,
+                      ),
+                    ),
                     const SizedBox(height: 4),
-                    const Text('Crie sua conta', style: TextStyle(color: AppTheme.cinza)),
+                    const Text(
+                      'Crie sua conta',
+                      style: TextStyle(color: AppTheme.cinza),
+                    ),
                     const SizedBox(height: 20),
-                    TextField(controller: nome, decoration: const InputDecoration(labelText: 'Nome completo')),
+                    TextField(
+                      controller: nome,
+                      decoration: const InputDecoration(
+                        labelText: 'Nome completo',
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    TextField(controller: email, keyboardType: TextInputType.emailAddress, decoration: const InputDecoration(labelText: 'E-mail')),
+                    TextField(
+                      controller: email,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(labelText: 'E-mail'),
+                    ),
                     const SizedBox(height: 12),
-                    TextField(controller: telefone, keyboardType: TextInputType.phone, decoration: const InputDecoration(labelText: 'Telefone')),
+                    TextField(
+                      controller: telefone,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(labelText: 'Telefone'),
+                    ),
                     const SizedBox(height: 12),
-                    TextField(controller: senha, obscureText: !mostrarSenha, decoration: InputDecoration(labelText: 'Senha', suffixIcon: IconButton(onPressed: () => setState(() => mostrarSenha = !mostrarSenha), icon: Icon(mostrarSenha ? Icons.visibility_off : Icons.visibility)))),
+                    TextField(
+                      controller: senha,
+                      obscureText: !mostrarSenha,
+                      decoration: InputDecoration(
+                        labelText: 'Senha',
+                        suffixIcon: IconButton(
+                          onPressed: () =>
+                              setState(() => mostrarSenha = !mostrarSenha),
+                          icon: Icon(
+                            mostrarSenha
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                          ),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 12),
-                    TextField(controller: confirmar, obscureText: !mostrarSenha, decoration: const InputDecoration(labelText: 'Confirmar senha')),
+                    TextField(
+                      controller: confirmar,
+                      obscureText: !mostrarSenha,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirmar senha',
+                      ),
+                    ),
                     const SizedBox(height: 20),
-                    FilledButton(onPressed: carregando ? null : cadastrar, child: carregando ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)) : const Text('Criar conta')),
-                    TextButton(onPressed: carregando ? null : () => Navigator.pop(context), child: const Text('Voltar para o login')),
+                    FilledButton(
+                      onPressed: carregando ? null : cadastrar,
+                      child: carregando
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Criar conta'),
+                    ),
+                    TextButton(
+                      onPressed: carregando
+                          ? null
+                          : () => Navigator.pop(context),
+                      child: const Text('Voltar para o login'),
+                    ),
                   ],
                 ),
               ),
