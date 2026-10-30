@@ -6,14 +6,23 @@ async function conversar(req, res) {
   const { mensagem, historico } = req.body ?? {};
 
   if (typeof mensagem !== "string" || !mensagem.trim()) {
-    return res.status(400).json({ mensagem: "Envie o campo 'mensagem' com o texto da pergunta." });
+    return res
+      .status(400)
+      .json({ mensagem: "Envie o campo 'mensagem' com o texto da pergunta." });
   }
   if (mensagem.length > MAX_MENSAGEM) {
-    return res.status(400).json({ mensagem: `A mensagem pode ter no máximo ${MAX_MENSAGEM} caracteres.` });
+    return res
+      .status(400)
+      .json({
+        mensagem: `A mensagem pode ter no máximo ${MAX_MENSAGEM} caracteres.`,
+      });
   }
 
   try {
-    const resposta = await enviarMensagem({ mensagem: mensagem.trim(), historico });
+    const resposta = await enviarMensagem({
+      mensagem: mensagem.trim(),
+      historico,
+    });
     return res.json({ resposta });
   } catch (erro) {
     if (erro.publico) {

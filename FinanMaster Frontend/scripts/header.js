@@ -1,25 +1,17 @@
 const API_URL = "http://localhost:3000";
 
-// Ações rápidas do dropdown: em qual página ficam e qual botão abre o modal
 const ACOES_RAPIDAS = {
   "nova-transacao": { pagina: "transacoes.html", botao: "#btn-nova-transacao" },
   "nova-meta": { pagina: "metas.html", botao: ".btn-nova" },
   "novo-orcamento": { pagina: "orcamentos.html", botao: "#btn-novo-orcamento" },
 };
 
-/* ============ Preferências globais (tema, texto, ocultar valores) ============ */
-
-// Valem para todas as páginas e ficam salvas no localStorage.
-// A página de Configurações altera esses valores e dispara o evento
-// "preferenciasAtualizadas"; o botão de tema do header faz o mesmo.
-
 const TAMANHOS_TEXTO = {
   pequeno: "11px",
-  normal: "", // vazio = volta ao tamanho definido no CSS da página
+  normal: "",
   grande: "14px",
 };
 
-// Elementos com valores em dinheiro que ficam desfocados em "Ocultar valores"
 const ALVOS_VALORES = [
   ".cards .card h2",
   ".item-transacao .valor",
@@ -44,9 +36,7 @@ function lerPreferencia(chave) {
 function salvarPreferencia(chave, valor) {
   try {
     localStorage.setItem(chave, valor);
-  } catch {
-    // armazenamento indisponível: a preferência vale só até recarregar
-  }
+  } catch {}
 }
 
 function injetarEstiloPreferencias() {
@@ -89,7 +79,6 @@ function aplicarPreferencias() {
   document.documentElement.style.fontSize =
     TAMANHOS_TEXTO[lerPreferencia("tamanhoTexto")] || "";
 
-  // Mantém o botão de tema do header em sincronia
   const toggle = document.getElementById("theme-toggle");
 
   if (toggle) {
@@ -97,12 +86,11 @@ function aplicarPreferencias() {
   }
 }
 
-// Aplica já ao carregar o script, antes do header chegar (evita "piscar" claro → escuro)
 injetarEstiloPreferencias();
 aplicarPreferencias();
 
 window.addEventListener("preferenciasAtualizadas", aplicarPreferencias);
-window.addEventListener("storage", aplicarPreferencias); // outra aba mudou
+window.addEventListener("storage", aplicarPreferencias);
 
 document.addEventListener("DOMContentLoaded", async () => {
   await carregarHeader();
@@ -196,7 +184,6 @@ function iniciarUsuario() {
   }
 }
 
-// Cartão do topo do dropdown: avatar (foto ou inicial), nome e e-mail
 function atualizarCartaoUsuario(nome, foto) {
   const nomeEl = document.getElementById("dropdown-nome");
   const emailEl = document.getElementById("dropdown-email");
@@ -237,7 +224,6 @@ function iniciarTema() {
   toggle.addEventListener("change", () => {
     salvarPreferencia("tema", toggle.checked ? "dark" : "light");
 
-    // aplica o tema e avisa a página de Configurações (se estiver aberta)
     window.dispatchEvent(new CustomEvent("preferenciasAtualizadas"));
   });
 }
@@ -266,8 +252,6 @@ function iniciarMenu() {
   });
 }
 
-/* ===================== Dropdown do perfil ===================== */
-
 function iniciarDropdown() {
   const dropdown = document.getElementById("profile-dropdown");
   const profileBtn = document.getElementById("profile-btn");
@@ -278,7 +262,6 @@ function iniciarDropdown() {
     return;
   }
 
-  // "Saldo de outubro"
   const tituloMes = document.getElementById("dropdown-mes");
 
   if (tituloMes) {
@@ -312,7 +295,6 @@ function iniciarDropdown() {
     }
   });
 
-  // Teclado: Esc fecha, setas navegam entre os itens
   document.addEventListener("keydown", (e) => {
     const aberto = dropdown.classList.contains("open");
 
@@ -347,7 +329,6 @@ function iniciarDropdown() {
     }
   });
 
-  // Ações rápidas (Transação, Meta, Orçamento)
   menu.addEventListener("click", (e) => {
     const botao = e.target.closest("[data-acao]");
 
@@ -361,8 +342,6 @@ function iniciarDropdown() {
 
   if (btnSair) {
     btnSair.addEventListener("click", async () => {
-      // Encerra a sessão do Firebase (no-op se o usuário não logou por ele)
-      // (import dinâmico: se o caminho falhar, não quebra o resto do header)
       try {
         const { getAuth, signOut } =
           await import("https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js");
@@ -373,7 +352,6 @@ function iniciarDropdown() {
         console.error("Erro ao encerrar sessão:", error);
       }
 
-      // Remove só os dados de sessão, preservando preferências como o tema
       [
         "usuarioId",
         "controleId",
@@ -388,7 +366,6 @@ function iniciarDropdown() {
   }
 }
 
-// Resumo do mês atual (saldo, receitas, despesas) mostrado no dropdown
 async function carregarResumoDropdown() {
   const controleId = localStorage.getItem("controleId");
 
@@ -414,7 +391,6 @@ async function carregarResumoDropdown() {
       ? resultado
       : resultado.transacoes || [];
 
-    // Compara "AAAA-MM" direto na string da data (evita erro de fuso horário)
     const hoje = new Date();
     const mesAtual = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`;
 
@@ -456,7 +432,6 @@ function formatarMoedaMenu(valor) {
   });
 }
 
-// Já está na página da ação? Abre o modal na hora. Senão, navega até ela.
 function executarAcaoRapida(chave) {
   const acao = ACOES_RAPIDAS[chave];
 
@@ -471,7 +446,6 @@ function executarAcaoRapida(chave) {
   }
 }
 
-// Chegou por uma ação rápida (?acao=nova-meta): abre o modal e limpa a URL
 function executarAcaoDaURL() {
   const chave = new URLSearchParams(location.search).get("acao");
   const acao = ACOES_RAPIDAS[chave];
@@ -484,9 +458,6 @@ function executarAcaoDaURL() {
   document.querySelector(acao.botao)?.click();
 }
 
-/* ========================== Pesquisa ========================== */
-
-// Elementos pesquisáveis em cada página (seletores CSS)
 const PESQUISA_POR_PAGINA = {
   "dashboard.html": [".cards .card", "#transacoes-recentes > *"],
   "orcamentos.html": [".resumo-card", "#orcamentos-lista > *"],
@@ -498,13 +469,10 @@ function normalizarTexto(texto) {
   return texto
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // ignora acentos: "orcamento" acha "Orçamento"
+    .replace(/[\u0300-\u036f]/g, "")
     .trim();
 }
 
-// Texto que o usuário enxerga no elemento: ignora o nome dos ícones
-// (Material Icons escrevem "delete", "flag" etc. como texto) e inclui
-// o valor dos campos preenchidos (nome, e-mail, telefone...).
 function textoPesquisavel(elemento) {
   const copia = elemento.cloneNode(true);
 
@@ -529,7 +497,6 @@ function iniciarPesquisa() {
     return;
   }
 
-  // Estilos da pesquisa injetados aqui: não dependem do header.css
   if (!document.getElementById("estilo-pesquisa")) {
     const estilo = document.createElement("style");
 
@@ -544,8 +511,6 @@ function iniciarPesquisa() {
 
   const pagina = obterPaginaAtual();
 
-  // Transações já tem busca própria (com filtros e paginação):
-  // a barra do header só repassa o texto para ela.
   if (pagina === "transacoes.html") {
     input.addEventListener("input", () => {
       const buscaPagina = document.getElementById("busca-input");
@@ -558,7 +523,6 @@ function iniciarPesquisa() {
       buscaPagina.dispatchEvent(new Event("input", { bubbles: true }));
     });
 
-    // O botão "Limpar" da página zera a busca dela: zera a do header também
     document
       .getElementById("btn-limpar-filtros")
       ?.addEventListener("click", () => {
@@ -576,7 +540,6 @@ function iniciarPesquisa() {
 
   const main = document.querySelector("main");
 
-  // Mensagem de "nenhum resultado"
   const vazio = document.createElement("p");
   vazio.className = "pesquisa-vazio pesquisa-oculto";
   main?.appendChild(vazio);
@@ -596,8 +559,6 @@ function iniciarPesquisa() {
       }
     });
 
-    // Só troca o texto se mudou: mexer nele dispara o MutationObserver
-    // abaixo e causaria um loop infinito.
     const mensagem = `Nenhum resultado para "${input.value.trim()}" nesta página.`;
 
     if (vazio.textContent !== mensagem) {
@@ -609,7 +570,6 @@ function iniciarPesquisa() {
 
   input.addEventListener("input", filtrar);
 
-  // Listas renderizadas depois (vindas da API): reaplica o filtro quando mudarem
   if (main) {
     new MutationObserver(() => {
       if (input.value.trim()) {
@@ -618,7 +578,6 @@ function iniciarPesquisa() {
     }).observe(main, { childList: true, subtree: true });
   }
 
-  // Esc limpa a pesquisa
   input.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       input.value = "";

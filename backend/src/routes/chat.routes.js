@@ -4,7 +4,6 @@ const router = express.Router();
 
 const { conversar } = require("../controllers/chat.controller");
 
-// Limite simples por IP para evitar abuso (cada mensagem consome créditos da API de IA).
 const JANELA_MS = 60 * 1000;
 const LIMITE_POR_JANELA = 20;
 const acessos = new Map();

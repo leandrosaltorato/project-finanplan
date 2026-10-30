@@ -12,7 +12,6 @@ const auth = getAuth(app);
 const API_BASE = "http://localhost:3000";
 const API_URL = `${API_BASE}/config`;
 
-// Página de login: a mesma que as outras telas usam quando não há sessão
 const PAGINA_LOGIN = "index.html";
 
 const CHAVES_SESSAO = [
@@ -34,31 +33,26 @@ const NOMES_METODOS = {
 
 const $ = (id) => document.getElementById(id);
 
-// Perfil
 const formPerfil = $("form-perfil");
 const inputNome = $("nome");
 const inputEmail = $("email");
 const inputTelefone = $("telefone");
 const btnSalvarPerfil = $("btn-salvar-perfil");
 
-// Foto
 const fotoConfig = $("foto-config");
 const fotoIniciais = $("foto-iniciais");
 const inputFoto = $("input-foto");
 const btnAlterarFoto = $("btn-alterar-foto");
 const btnRemoverFoto = $("btn-remover-foto");
 
-// Preferências
 const toggleTema = $("config-tema-toggle");
 const toggleOcultar = $("config-ocultar-valores");
 const selectTamanho = $("config-tamanho-texto");
 const btnRestaurar = $("btn-restaurar-preferencias");
 
-// Seus dados
 const btnExportarCsv = $("btn-exportar-csv");
 const btnExportarJson = $("btn-exportar-json");
 
-// Segurança
 const formSenha = $("form-senha");
 const camposSenha = $("campos-senha");
 const avisoSenha = $("aviso-senha");
@@ -67,22 +61,17 @@ const inputNovaSenha = $("nova-senha");
 const inputConfirmarSenha = $("confirmar-senha");
 const btnAtualizarSenha = $("btn-atualizar-senha");
 
-// Exclusão de conta
 const btnExcluirConta = $("btn-excluir-conta");
 const modalExcluir = $("modal-excluir-conta");
 const inputConfirmarExclusao = $("confirmar-exclusao");
 const btnConfirmarExclusao = $("btn-confirmar-exclusao");
 const btnCancelarExclusao = $("btn-cancelar-exclusao");
 
-// Só libera "Salvar" depois que o perfil real foi carregado, para nunca
-// gravar o texto provisório no lugar do nome/e-mail.
 let perfilCarregado = false;
 
 if (btnSalvarPerfil) {
   btnSalvarPerfil.disabled = true;
 }
-
-/* ================= Utilidades ================= */
 
 function irParaLogin() {
   window.location.href = PAGINA_LOGIN;
@@ -123,7 +112,6 @@ function mostrarToast(mensagem, tipo = "sucesso") {
   }, 3800);
 }
 
-// Desabilita o botão e mostra "carregando" enquanto a ação roda (evita clique duplo)
 async function comCarregamento(botao, textoCarregando, acao) {
   if (!botao || botao.disabled) {
     return;
@@ -191,8 +179,6 @@ async function chamarApi(caminho, opcoes = {}) {
   return dados;
 }
 
-/* ================= Perfil ================= */
-
 function formatarTelefone(valor) {
   const d = String(valor || "")
     .replace(/\D/g, "")
@@ -212,7 +198,6 @@ function emailValido(email) {
 }
 
 async function carregarPerfil() {
-  // Mostra o que já está salvo no navegador enquanto a API responde
   inputNome.value = localStorage.getItem("nomeUsuario") || "";
   inputEmail.value = localStorage.getItem("emailUsuario") || "";
   mostrarFoto();
@@ -288,8 +273,6 @@ async function salvarPerfil(evento) {
   });
 }
 
-/* ================= Foto de perfil ================= */
-
 function obterIniciais(nome) {
   const partes = String(nome || "")
     .trim()
@@ -325,8 +308,6 @@ function mostrarFoto() {
   btnRemoverFoto.hidden = !foto;
 }
 
-// Recorta no centro (quadrado) e reduz para 256 px: a foto cabe no localStorage
-// mesmo quando o arquivo original tem vários MB.
 function prepararImagem(arquivo, lado = 256) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(arquivo);
@@ -345,7 +326,6 @@ function prepararImagem(arquivo, lado = 256) {
 
       const contexto = canvas.getContext("2d");
 
-      // Fundo branco: PNG com transparência não vira preto ao virar JPEG
       contexto.fillStyle = "#ffffff";
       contexto.fillRect(0, 0, lado, lado);
       contexto.drawImage(
@@ -416,10 +396,6 @@ function removerFoto() {
   mostrarToast("Foto removida.");
 }
 
-/* ================= Preferências ================= */
-
-// O header.js aplica estas preferências em todas as páginas
-// quando recebe o evento "preferenciasAtualizadas".
 function notificarPreferencias() {
   window.dispatchEvent(new CustomEvent("preferenciasAtualizadas"));
 }
@@ -464,11 +440,8 @@ btnRestaurar?.addEventListener("click", () => {
   mostrarToast("Preferências restauradas para o padrão.");
 });
 
-// Se o tema for trocado pelo botão do header (ou em outra aba), acompanha
 window.addEventListener("preferenciasAtualizadas", sincronizarPreferencias);
 window.addEventListener("storage", sincronizarPreferencias);
-
-/* ================= Exportação de dados ================= */
 
 function baixarArquivo(nome, conteudo, tipo) {
   const blob = new Blob([conteudo], { type: tipo });
@@ -533,8 +506,6 @@ async function buscarLista(caminho) {
   return dados?.transacoes || dados?.metas || dados?.orcamentos || [];
 }
 
-// Aspas duplicadas + proteção contra "injeção de fórmula" no Excel
-// (texto que começa com = + - @ viraria uma fórmula).
 function celulaCsv(valor) {
   let texto = String(valor ?? "");
 
@@ -599,7 +570,6 @@ async function exportarCsv() {
           .join(";"),
       );
 
-      // BOM + ";" + vírgula decimal: abre certo no Excel em português
       const conteudo = `﻿${[cabecalho.map(celulaCsv).join(";"), ...linhas].join("\r\n")}`;
 
       baixarArquivo(
@@ -648,9 +618,6 @@ async function exportarJson() {
   });
 }
 
-/* ================= Segurança ================= */
-
-// Quem entrou com o Google não tem senha do FinanPlan para trocar
 function configurarSeguranca(usuario) {
   const temSenha = usuario.providerData.some(
     (provedor) => provedor.providerId === "password",
@@ -772,14 +739,12 @@ async function excluirConta() {
 
     try {
       await auth.signOut();
-    } catch {
-    }
+    } catch {}
 
     limparSessaoLocal();
     irParaLogin();
   });
 }
-
 
 formPerfil?.addEventListener("submit", salvarPerfil);
 formSenha?.addEventListener("submit", atualizarSenha);
@@ -821,7 +786,6 @@ document.addEventListener("keydown", (evento) => {
     fecharModalExcluir();
   }
 });
-
 
 sincronizarPreferencias();
 mostrarFoto();

@@ -50,12 +50,15 @@ img {
 [hidden] {
   display: none !important;
 }
+
 h1 {
   font-size: 2.2rem;
 }
+
 h2 {
   font-size: 1.5rem;
 }
+
 p {
   font-size: 0.86rem;
   color: var(--color-gray-dark);
@@ -76,11 +79,13 @@ main {
 .page-header {
   margin-bottom: 2rem;
 }
+
 .page-header h1 {
   font-size: 1.8rem;
   font-weight: 700;
   color: var(--color-dark);
 }
+
 .page-header p {
   font-size: 0.86rem;
   color: var(--color-gray-light);
@@ -125,6 +130,7 @@ main {
 .config-icon-box.perigo {
   background: var(--color-danger-light);
 }
+
 .config-icon-box.perigo .material-icons {
   color: var(--color-danger);
 }
@@ -135,6 +141,7 @@ main {
   color: var(--color-dark);
   margin-bottom: 2px;
 }
+
 .config-card-header p {
   font-size: 0.8rem;
   color: var(--color-gray-light);
@@ -260,6 +267,7 @@ main {
   color: var(--color-dark);
   margin-bottom: 2px;
 }
+
 .toggle-info p {
   font-size: 0.76rem;
   color: var(--color-gray-light);
@@ -333,6 +341,7 @@ main {
 .btn-salvar-config:hover {
   opacity: 0.9;
 }
+
 .btn-salvar-config .material-icons {
   font-size: 1rem;
 }
@@ -368,6 +377,7 @@ main {
   background: var(--color-danger);
   color: #fff;
 }
+
 .btn-perigo .material-icons {
   font-size: 1rem;
 }
@@ -389,13 +399,12 @@ main {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .btn-perigo {
     width: 100%;
     justify-content: center;
   }
 }
-
-/* ===== Novos recursos da página ===== */
 
 .btn-secundario .material-icons {
   font-size: 1rem;
@@ -420,7 +429,6 @@ main {
   gap: 1rem;
 }
 
-/* Aviso informativo (ex.: login pelo Google) */
 .aviso-info {
   display: flex;
   align-items: flex-start;
@@ -440,7 +448,6 @@ main {
   line-height: 1.5;
 }
 
-/* Spinner dos botões */
 .girando {
   animation: girar 0.8s linear infinite;
 }
@@ -451,7 +458,6 @@ main {
   }
 }
 
-/* Avisos (toast) */
 #toast-area {
   position: fixed;
   right: 1.2rem;
@@ -514,7 +520,6 @@ main {
   }
 }
 
-/* Modal de exclusão de conta */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -625,7 +630,6 @@ main {
   }
 }
 
-/* Tema escuro (só para os elementos novos) */
 body.dark-theme .modal {
   background: #1e1e2a;
 }

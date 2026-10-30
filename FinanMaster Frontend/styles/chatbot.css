@@ -60,8 +60,6 @@ p {
   color: var(--color-gray-dark);
 }
 
-/* LAYOUT PRINCIPAL (mesmo das páginas Transações/Metas/Orçamentos) */
-
 main {
   width: calc(100% - 20rem);
   max-width: none;
@@ -123,8 +121,6 @@ main {
 .btn-nova .material-icons {
   font-size: 1.4rem;
 }
-
-/* CARD DO CHAT */
 
 .chat-card {
   display: flex;
@@ -194,8 +190,6 @@ main {
   border-radius: 50%;
   background: #7dffc0;
 }
-
-/* MENSAGENS */
 
 .chat-mensagens {
   flex: 1;
@@ -278,8 +272,6 @@ main {
   opacity: 0.65;
 }
 
-/* DIGITANDO */
-
 .digitando {
   display: flex;
   gap: 0.3rem;
@@ -326,8 +318,6 @@ main {
   }
 }
 
-/* SUGESTÕES */
-
 .chat-sugestoes {
   display: flex;
   gap: 0.6rem;
@@ -358,8 +348,6 @@ main {
   border-color: var(--fp-green);
   color: #fff;
 }
-
-/* FORMULÁRIO */
 
 .chat-form {
   display: flex;
@@ -426,8 +414,6 @@ main {
   font-size: 1.3rem;
 }
 
-/* TEMA ESCURO */
-
 body.dark-theme {
   --color-white: #1f2026;
   --color-light: #141519;
@@ -450,10 +436,6 @@ body.dark-theme .chat-form input:focus {
   background: var(--color-white);
 }
 
-/* Mensagens no estilo WhatsApp.
-   Inclua DEPOIS do chatbot.css:
-   <link rel="stylesheet" href="styles/chatbot-whatsapp.css" /> */
-
 .chat-card .chat-mensagens {
   display: flex;
   flex-direction: column;
@@ -463,7 +445,6 @@ body.dark-theme .chat-form input:focus {
   background: #efeae2;
 }
 
-/* "Hoje" no topo da conversa */
 .chat-card .chat-dia {
   align-self: center;
   margin: 0.25rem 0 0.75rem;
@@ -476,7 +457,6 @@ body.dark-theme .chat-form input:focus {
   box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
 }
 
-/* Balão */
 .chat-card .mensagem {
   position: relative;
   display: flow-root;
@@ -489,21 +469,24 @@ body.dark-theme .chat-form input:focus {
   overflow-wrap: anywhere;
   box-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
 }
+
 .chat-card .mensagem.primeira {
   margin-top: 0.5rem;
 }
+
 .chat-card .mensagem-texto {
   white-space: pre-wrap;
 }
 
-/* Enviadas (verde, à direita) */
 .chat-card .mensagem-usuario {
   align-self: flex-end;
   background: #d9fdd3;
 }
+
 .chat-card .mensagem-usuario.primeira {
   border-top-right-radius: 0;
 }
+
 .chat-card .mensagem-usuario.primeira::before {
   content: "";
   position: absolute;
@@ -513,14 +496,15 @@ body.dark-theme .chat-form input:focus {
   border-bottom: 8px solid transparent;
 }
 
-/* Recebidas (branco, à esquerda) */
 .chat-card .mensagem-bot {
   align-self: flex-start;
   background: #fff;
 }
+
 .chat-card .mensagem-bot.primeira {
   border-top-left-radius: 0;
 }
+
 .chat-card .mensagem-bot.primeira::before {
   content: "";
   position: absolute;
@@ -546,6 +530,7 @@ body.dark-theme .chat-form input:focus {
   gap: 4px;
   padding: 0.75rem 0.8rem;
 }
+
 .chat-card .mensagem.digitando span {
   width: 7px;
   height: 7px;
@@ -553,12 +538,15 @@ body.dark-theme .chat-form input:focus {
   background: #8696a0;
   animation: pontinho 1.2s infinite;
 }
+
 .chat-card .mensagem.digitando span:nth-child(2) {
   animation-delay: 0.15s;
 }
+
 .chat-card .mensagem.digitando span:nth-child(3) {
   animation-delay: 0.3s;
 }
+
 @keyframes pontinho {
   0%,
   60%,
@@ -576,11 +564,10 @@ body.dark-theme .chat-form input:focus {
   background: #fde8e8;
   color: #b4301e;
 }
+
 .chat-card .mensagem-erro::before {
   display: none;
 }
-
-/* RESPONSIVIDADE */
 
 @media (max-width: 1200px) {
   main {

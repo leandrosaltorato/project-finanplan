@@ -1,21 +1,17 @@
-// FinanBot: liga a página do assistente (chatbot.html) ao backend de IA.
-// Usa os elementos que já existem no HTML: #chat-mensagens, #chat-form, #chat-input,
-// #btn-enviar, #chat-sugestoes (.sugestao) e #btn-nova-conversa.
 (function () {
   "use strict";
 
   const API_URL = "http://localhost:3000/chat/mensagem";
-  const MAX_HISTORICO = 20; // mensagens anteriores enviadas à IA
+  const MAX_HISTORICO = 20; 
   const TIMEOUT_MS = 30000;
   const BOAS_VINDAS =
     "Olá! Eu sou o FinanBot, seu assistente financeiro. Como posso ajudar hoje?";
 
-  // Classes CSS das mensagens (estilizadas em styles/chatbot-whatsapp.css).
   const CLASSES = {
     base: "mensagem",
     usuario: "mensagem-usuario",
     bot: "mensagem-bot",
-    primeira: "primeira", // primeira mensagem de uma sequência (ganha o "bico" do balão)
+    primeira: "primeira", 
     digitando: "digitando",
     erro: "mensagem-erro",
   };
@@ -28,9 +24,9 @@
   const botaoNova = document.getElementById("btn-nova-conversa");
   if (!lista || !form || !campo) return;
 
-  let historico = []; // { role: 'user' | 'assistant', content }
+  let historico = []; 
   let enviando = false;
-  let conversa = 0; // muda a cada "Nova conversa" para ignorar respostas antigas
+  let conversa = 0; 
   let ultimoPapel = null;
 
   const hora = () =>
@@ -39,8 +35,7 @@
       minute: "2-digit",
     });
 
-  // Deixa o texto da IA mais legível: **negrito** e listas com "•".
-  // Tudo entra como texto (nunca como HTML), então é seguro.
+
   function preencherTexto(el, texto) {
     const limpo = texto.replace(/^[ \t]*[*-][ \t]+/gm, "• ");
     limpo.split(/(\*\*[^*\n]+\*\*)/g).forEach((parte) => {
@@ -98,7 +93,6 @@
     return bolha;
   }
 
-  // Balão com três pontinhos animados, enquanto a IA responde.
   function adicionarDigitando() {
     const bolha = document.createElement("div");
     bolha.className = [
@@ -134,7 +128,6 @@
       try {
         dados = await resposta.json();
       } catch {
-        /* resposta sem JSON */
       }
       if (!resposta.ok)
         throw new Error(

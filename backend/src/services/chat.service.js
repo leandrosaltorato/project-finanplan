@@ -1,8 +1,5 @@
-// Chat com IA usando a API do Google Gemini (tem plano gratuito, sem cartão).
-// Usa o fetch nativo do Node 18+, então não precisa instalar nenhum pacote.
-
-const MAX_HISTORICO = 20; // quantidade de mensagens anteriores enviadas à IA
-const MAX_CARACTERES = 4000; // tamanho máximo de cada mensagem do histórico
+const MAX_HISTORICO = 20;
+const MAX_CARACTERES = 4000;
 
 const SYSTEM_PROMPT = `Você é o FinanBot, assistente financeiro do FinanPlan, aplicativo de planejamento financeiro pessoal.
 Responda sempre em português do Brasil, de forma clara, simpática e objetiva.
@@ -11,7 +8,6 @@ Você não tem acesso aos dados financeiros do usuário (saldo, gastos ou metas)
 Não dê recomendações de investimento específicas nem prometa retorno. Para decisões importantes, sugira procurar um profissional.
 Se não souber algo, diga que não sabe em vez de inventar.`;
 
-// Erros com texto seguro para mostrar ao usuário.
 function erroPublico(mensagem, status) {
   const erro = new Error(mensagem);
   erro.status = status;
@@ -31,10 +27,8 @@ function montarConteudo(historico, mensagem) {
     .map((m) => ({ role: m.role, content: m.content.slice(0, MAX_CARACTERES) }))
     .slice(-MAX_HISTORICO);
 
-  // A conversa precisa começar com uma mensagem do usuário.
   while (anteriores.length && anteriores[0].role !== "user") anteriores.shift();
 
-  // O Gemini chama a resposta da IA de "model".
   return [...anteriores, { role: "user", content: mensagem }].map((m) => ({
     role: m.role === "assistant" ? "model" : "user",
     parts: [{ text: m.content }],
