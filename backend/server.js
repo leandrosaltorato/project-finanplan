@@ -45,6 +45,32 @@ app.use("/config", configRoutes);
 const orcamentosRoutes = require("./src/routes/orcamentos.routes");
 app.use("/orcamentos", orcamentosRoutes);
 
-app.listen(process.env.PORT_APP, () => {
-  console.log("Online na porta " + process.env.PORT_APP);
-});
+const chatRoutes = require('./src/routes/chat.routes');
+app.use('/chat', chatRoutes);
+
+const {
+  garantirCategoriasPadrao,
+} = require("./src/services/categoriasPadrao.services");
+
+
+async function iniciarServidor() {
+  try {
+    await garantirCategoriasPadrao();
+
+    const PORT = process.env.PORT_APP || 3000;
+
+    app.listen(PORT, () => {
+      console.log("Online na porta " + PORT);
+    });
+  } catch (error) {
+    console.error(
+      "Erro ao inicializar categorias padrão:",
+      error
+    );
+
+    process.exit(1);
+  }
+}
+
+iniciarServidor();
+

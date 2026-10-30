@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinanPlan - Assistente</title>
+
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles/header.css" />
+    <link rel="stylesheet" href="styles/chatbot.css" />
+  </head>
+
+  <body>
+    <header id="site-header"></header>
+
+    <main>
+      <div class="content">
+        <div class="page-header">
+          <div>
+            <h1>Assistente Financeiro</h1>
+            <p>Tire dúvidas e receba dicas sobre suas finanças</p>
+          </div>
+
+          <button class="btn-nova" id="btn-nova-conversa" type="button">
+            <span class="material-icons">add_comment</span>
+            Nova Conversa
+          </button>
+        </div>
+
+        <div class="chat-card">
+          <div class="chat-topo">
+            <div class="chat-avatar-bot">
+              <span class="material-icons">smart_toy</span>
+            </div>
+            <div class="chat-topo-info">
+              <h2>FinanBot</h2>
+              <p><span class="status-ponto"></span> Online</p>
+            </div>
+          </div>
+
+          <div
+            class="chat-mensagens"
+            id="chat-mensagens"
+            aria-live="polite"
+          ></div>
+
+          <div class="chat-sugestoes" id="chat-sugestoes">
+            <button type="button" class="sugestao">Como dividir meu salario?</button>
+            <button type="button" class="sugestao">
+              Dicas para economizar
+            </button>
+            <button type="button" class="sugestao">Como criar uma meta?</button>
+          </div>
+
+          <form class="chat-form" id="chat-form" autocomplete="off">
+            <input
+              type="text"
+              id="chat-input"
+              placeholder="Digite sua mensagem..."
+              aria-label="Mensagem"
+              maxlength="500"
+            />
+            <button
+              class="btn-enviar"
+              id="btn-enviar"
+              type="submit"
+              aria-label="Enviar"
+            >
+              <span class="material-icons">send</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="scripts/header.js"></script>
+    <script src="scripts/chatbot.js"></script>
+  </body>
+</html>

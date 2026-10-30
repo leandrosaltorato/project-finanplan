@@ -50,6 +50,7 @@ loginForm.addEventListener("submit", async (event) => {
     localStorage.setItem("usuarioId", String(dados.usuario.id));
     localStorage.setItem("controleId", String(dados.controleId));
     localStorage.setItem("nomeUsuario", dados.usuario.nome);
+    localStorage.setItem("emailUsuario", dados.usuario.email || email);
     localStorage.setItem("tipoLogin", "normal");
 
     window.location.href = "dashboard.html";
@@ -99,6 +100,10 @@ googleLogin.addEventListener("click", async (event) => {
     localStorage.setItem(
       "nomeUsuario",
       dados.usuario.nome || usuario.displayName || "Usuário",
+    );
+    localStorage.setItem(
+      "emailUsuario",
+      dados.usuario.email || usuario.email || "",
     );
     localStorage.setItem("tipoLogin", "google");
     localStorage.setItem("fotoPerfil", usuario.photoURL || "");

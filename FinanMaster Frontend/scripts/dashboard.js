@@ -13,33 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const btnAbrirModal = document.getElementById("btn-abrir-modal");
-  const btnFecharModal = document.querySelector(".fechar-modal");
-  const form = document.getElementById("form-transacao");
-  const modal = document.getElementById("modal");
-
-  if (btnAbrirModal) {
-    btnAbrirModal.addEventListener("click", abrirModal);
-  }
-
-  if (btnFecharModal) {
-    btnFecharModal.addEventListener("click", fecharModal);
-  }
-
-  if (form) {
-    form.addEventListener("submit", cadastrarTransacao);
-  }
-
-  if (modal) {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        fecharModal();
-      }
-    });
-  }
-
   iniciarDashboard();
-  carregarCategorias();
 });
 
 function iniciarDashboard() {
@@ -126,13 +100,28 @@ function mostrarTransacoesRecentes(transacoes) {
 
   container.innerHTML = "";
 
-  transacoes.slice(0, 5).forEach((transacao) => {
+  if (!Array.isArray(transacoes) || transacoes.length === 0) {
+    container.innerHTML = `
+      <div class="transacoes-vazio">
+        <span class="material-icons">receipt_long</span>
+        <h4>Nenhuma transação ainda</h4>
+        <p>Cadastre sua primeira movimentação na página Transações.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  transacoes.slice(0, 5).forEach((transacao, indice) => {
     const entrada = transacao.tipo === "ENTRADA";
     const categoria = transacao.categoria?.nome || "Sem categoria";
 
     const elemento = document.createElement("div");
 
-    elemento.className = "item-transacao";
+    elemento.className = `item-transacao ${entrada ? "entrada" : "saida"}`;
+
+    // Atraso da animação de entrada: um item após o outro
+    elemento.style.setProperty("--i", indice);
 
     elemento.innerHTML = `
       <div class="lado-esquerdo">
@@ -144,124 +133,25 @@ function mostrarTransacoesRecentes(transacoes) {
 
         <div class="info">
           <h4>${escaparHTML(transacao.descricao)}</h4>
-          <small>
-            ${escaparHTML(categoria)} · ${formatarData(transacao.data)}
-          </small>
+
+          <div class="info-meta">
+            <span class="categoria-pill">${escaparHTML(categoria)}</span>
+            <small>${formatarData(transacao.data)}</small>
+          </div>
         </div>
       </div>
 
-      <div class="valor ${entrada ? "positivo" : "negativo"}">
-        ${entrada ? "+" : "-"} ${formatarMoeda(transacao.valor)}
+      <div class="lado-direito">
+        <div class="valor ${entrada ? "positivo" : "negativo"}">
+          ${entrada ? "+" : "-"} ${formatarMoeda(transacao.valor)}
+        </div>
+
+        <small class="valor-tipo">${entrada ? "Entrada" : "Saída"}</small>
       </div>
     `;
 
     container.appendChild(elemento);
   });
-}
-
-async function carregarCategorias() {
-  try {
-    const response = await fetch(`${API_URL}/categoria/listar`);
-
-    if (!response.ok) {
-      throw new Error(`Erro ao buscar categorias: ${response.status}`);
-    }
-
-    const categorias = await response.json();
-
-    const select = document.getElementById("categoria");
-
-    if (!select) {
-      return;
-    }
-
-    select.innerHTML = `
-      <option value="">Selecione uma categoria</option>
-    `;
-
-    categorias.forEach((categoria) => {
-      const option = document.createElement("option");
-
-      option.value = categoria.id;
-      option.textContent = categoria.nome;
-
-      select.appendChild(option);
-    });
-  } catch (error) {
-    console.error("Erro ao carregar categorias:", error);
-  }
-}
-
-async function cadastrarTransacao(event) {
-  event.preventDefault();
-
-  const descricao = document.getElementById("descricao").value.trim();
-  const valor = Number(document.getElementById("valor").value);
-  const tipo = document.getElementById("tipo").value;
-  const categoriaId = Number(document.getElementById("categoria").value);
-  const controleId = Number(localStorage.getItem("controleId"));
-
-  if (!controleId) {
-    alert("controle financeiro não encontrado faça login novamente");
-    return;
-  }
-
-  if (!descricao || valor <= 0 || !categoriaId) {
-    alert("Preencha todos os campos corretamente.");
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/transacoes/cadastrar`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        descricao,
-        valor,
-        tipo,
-        categoriaId,
-        controleId,
-      }),
-    });
-
-    const resultado = await response.json();
-
-    if (!response.ok) {
-      alert(
-        resultado.detalhes || resultado.erro || "Erro ao cadastrar transação",
-      );
-      return;
-    }
-
-    document.getElementById("form-transacao").reset();
-
-    fecharModal();
-
-    await carregarDashboard();
-
-    alert("Transação cadastrada com sucesso!");
-  } catch (error) {
-    console.error("Erro ao cadastrar transação:", error);
-    alert("Não foi possível conectar ao servidor");
-  }
-}
-
-function abrirModal() {
-  const modal = document.getElementById("modal");
-
-  if (modal) {
-    modal.style.display = "flex";
-  }
-}
-
-function fecharModal() {
-  const modal = document.getElementById("modal");
-
-  if (modal) {
-    modal.style.display = "none";
-  }
 }
 
 function formatarMoeda(valor) {
@@ -276,10 +166,38 @@ function formatarData(data) {
     return "";
   }
 
-  return new Date(data).toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "short",
-  });
+  // Datas "YYYY-MM-DD..." viram data LOCAL (new Date(string) interpretaria
+  // como UTC e, no Brasil, mostraria o dia anterior).
+  const partes = String(data).match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+  const dataObj = partes
+    ? new Date(Number(partes[1]), Number(partes[2]) - 1, Number(partes[3]))
+    : new Date(data);
+
+  if (Number.isNaN(dataObj.getTime())) {
+    return "";
+  }
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  const dia = new Date(dataObj);
+  dia.setHours(0, 0, 0, 0);
+
+  const diferenca = Math.round((hoje - dia) / (1000 * 60 * 60 * 24));
+
+  if (diferenca === 0) {
+    return "Hoje";
+  }
+
+  if (diferenca === 1) {
+    return "Ontem";
+  }
+
+  return dataObj
+    .toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })
+    .replace(".", "")
+    .replace(" de ", " ");
 }
 
 function atualizarElemento(id, valor) {

@@ -33,7 +33,8 @@
         </div>
 
         <div class="config-grid">
-          <div class="config-card">
+          <!-- Perfil -->
+          <form class="config-card" id="form-perfil" novalidate>
             <div class="config-card-header">
               <div class="config-icon-box">
                 <span class="material-icons">person</span>
@@ -45,7 +46,10 @@
             </div>
 
             <div class="perfil-foto">
-              <img id="foto-config" src="" alt="Foto de perfil" />
+              <img id="foto-config" alt="Foto de perfil" hidden />
+              <span class="foto-iniciais" id="foto-iniciais" aria-hidden="true"
+                >?</span
+              >
             </div>
 
             <div>
@@ -56,40 +60,66 @@
                 hidden
               />
 
-              <button
-                class="btn-secundario"
-                id="btn-alterar-foto"
-                type="button"
-              >
-                Alterar foto
-              </button>
+              <div class="foto-botoes">
+                <button
+                  class="btn-secundario"
+                  id="btn-alterar-foto"
+                  type="button"
+                >
+                  <span class="material-icons">photo_camera</span>
+                  Alterar foto
+                </button>
 
-              <p class="foto-hint">JPG ou PNG</p>
+                <button
+                  class="btn-secundario"
+                  id="btn-remover-foto"
+                  type="button"
+                  hidden
+                >
+                  <span class="material-icons">delete</span>
+                  Remover foto
+                </button>
+              </div>
+
+              <p class="foto-hint">
+                JPG ou PNG
+              </p>
+            </div>
+
+            <div class="form-grupo">
+              <label for="nome">Nome completo</label>
+              <input
+                type="text"
+                id="nome"
+                name="nome"
+                autocomplete="name"
+                maxlength="100"
+                placeholder="Carregando..."
+              />
             </div>
 
             <div class="form-linha">
               <div class="form-grupo">
-                <label>Nome completo</label>
-                <input type="text" id="nome" value="Carregando..." />
-              </div>
-              <div class="form-grupo">
-                <label>E-mail</label>
+                <label for="email">E-mail</label>
                 <input
                   type="email"
                   id="email"
-                  value="Carregando..."
+                  name="email"
+                  autocomplete="email"
+                  placeholder="Carregando..."
                 />
               </div>
-            </div>
 
-            <div class="form-linha">
               <div class="form-grupo">
-                <label>Telefone</label>
-                <input type="tel" id="telefone" placeholder="(00) 00000-0000" />
-              </div>
-              <div class="form-grupo">
-                <label>Data de nascimento</label>
-                <input type="date" />
+                <label for="telefone">Telefone</label>
+                <input
+                  type="tel"
+                  id="telefone"
+                  name="telefone"
+                  autocomplete="tel"
+                  inputmode="tel"
+                  placeholder="(00) 00000-0000"
+                />
               </div>
             </div>
 
@@ -97,14 +127,15 @@
               <button
                 class="btn-salvar-config"
                 id="btn-salvar-perfil"
-                type="button"
+                type="submit"
               >
                 <span class="material-icons">check</span>
                 Salvar alterações
               </button>
             </div>
-          </div>
+          </form>
 
+          <!-- Preferências -->
           <div class="config-card">
             <div class="config-card-header">
               <div class="config-icon-box">
@@ -112,26 +143,7 @@
               </div>
               <div>
                 <h2>Preferências</h2>
-                <p>Personalize sua experiência</p>
-              </div>
-            </div>
-
-            <div class="form-linha">
-              <div class="form-grupo">
-                <label>Moeda</label>
-                <select>
-                  <option>Real (R$)</option>
-                  <option>Dólar (US$)</option>
-                  <option>Euro (€)</option>
-                </select>
-              </div>
-              <div class="form-grupo">
-                <label>Idioma</label>
-                <select>
-                  <option>Português (BR)</option>
-                  <option>English</option>
-                  <option>Español</option>
-                </select>
+                <p>Salvas automaticamente neste navegador</p>
               </div>
             </div>
 
@@ -141,35 +153,106 @@
                 <p>Ativar tema escuro na interface</p>
               </div>
               <label class="switch">
-                <input type="checkbox" id="config-tema-toggle" />
+                <input
+                  type="checkbox"
+                  id="config-tema-toggle"
+                  aria-label="Modo escuro"
+                />
                 <span class="slider"></span>
               </label>
             </div>
 
             <div class="toggle-linha">
               <div class="toggle-info">
-                <h4>Notificações por e-mail</h4>
-                <p>Receber resumo semanal das finanças</p>
+                <h4>Ocultar valores</h4>
+                <p>
+                  Desfoca saldos e valores em todas as telas. Passe o mouse para
+                  ver.
+                </p>
               </div>
               <label class="switch">
-                <input type="checkbox" checked />
+                <input
+                  type="checkbox"
+                  id="config-ocultar-valores"
+                  aria-label="Ocultar valores"
+                />
                 <span class="slider"></span>
               </label>
             </div>
 
             <div class="toggle-linha">
               <div class="toggle-info">
-                <h4>Alertas de meta</h4>
-                <p>Avisar quando uma meta estiver próxima do prazo</p>
+                <h4>Tamanho do texto</h4>
+                <p>Aumente ou diminua o texto em todas as páginas</p>
               </div>
-              <label class="switch">
-                <input type="checkbox" checked />
-                <span class="slider"></span>
-              </label>
+              <div class="form-grupo sem-margem">
+                <select id="config-tamanho-texto" aria-label="Tamanho do texto">
+                  <option value="pequeno">Pequeno</option>
+                  <option value="normal">Normal</option>
+                  <option value="grande">Grande</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="config-card-footer">
+              <button
+                class="btn-secundario"
+                id="btn-restaurar-preferencias"
+                type="button"
+              >
+                <span class="material-icons">restart_alt</span>
+                Restaurar padrões
+              </button>
             </div>
           </div>
 
+          <!-- Seus dados -->
           <div class="config-card">
+            <div class="config-card-header">
+              <div class="config-icon-box">
+                <span class="material-icons">download</span>
+              </div>
+              <div>
+                <h2>Seus dados</h2>
+                <p>Leve uma cópia das suas informações</p>
+              </div>
+            </div>
+
+            <div class="toggle-linha">
+              <div class="toggle-info">
+                <h4>Exportar transações</h4>
+                <p>
+                  Planilha CSV com suas receitas e despesas, pronta para abrir
+                  no Excel
+                </p>
+              </div>
+              <button
+                class="btn-secundario"
+                id="btn-exportar-csv"
+                type="button"
+              >
+                <span class="material-icons">table_view</span>
+                Baixar CSV
+              </button>
+            </div>
+
+            <div class="toggle-linha">
+              <div class="toggle-info">
+                <h4>Backup completo</h4>
+                <p>Transações, orçamentos e metas em um único arquivo JSON</p>
+              </div>
+              <button
+                class="btn-secundario"
+                id="btn-exportar-json"
+                type="button"
+              >
+                <span class="material-icons">backup</span>
+                Baixar JSON
+              </button>
+            </div>
+          </div>
+
+          <form class="config-card" id="form-senha" novalidate>
             <div class="config-card-header">
               <div class="config-icon-box">
                 <span class="material-icons">lock</span>
@@ -180,37 +263,59 @@
               </div>
             </div>
 
-            <div class="form-grupo">
-              <label>Senha atual</label>
-              <input type="password" id="senha-atual" placeholder="••••••••" />
-            </div>
-
-            <div class="form-linha">
+            <div id="campos-senha" hidden>
               <div class="form-grupo">
-                <label>Nova senha</label>
-                <input type="password" id="nova-senha" placeholder="••••••••" />
-              </div>
-              <div class="form-grupo">
-                <label>Confirmar nova senha</label>
+                <label for="senha-atual">Senha atual</label>
                 <input
                   type="password"
-                  id="confirmar-senha"
+                  id="senha-atual"
+                  autocomplete="current-password"
                   placeholder="••••••••"
                 />
               </div>
+
+              <div class="form-linha">
+                <div class="form-grupo">
+                  <label for="nova-senha">Nova senha</label>
+                  <input
+                    type="password"
+                    id="nova-senha"
+                    autocomplete="new-password"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div class="form-grupo">
+                  <label for="confirmar-senha">Confirmar nova senha</label>
+                  <input
+                    type="password"
+                    id="confirmar-senha"
+                    autocomplete="new-password"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div class="config-card-footer">
+                <button
+                  class="btn-salvar-config"
+                  id="btn-atualizar-senha"
+                  type="submit"
+                >
+                  <span class="material-icons">check</span>
+                  Atualizar senha
+                </button>
+              </div>
             </div>
 
-            <div class="config-card-footer">
-              <button
-                class="btn-salvar-config"
-                id="btn-atualizar-senha"
-                type="button"
-              >
-                <span class="material-icons">check</span>
-                Atualizar senha
-              </button>
+            <div class="aviso-info" id="aviso-senha" hidden>
+              <span class="material-icons">info</span>
+              <p>
+                Você entrou com a sua conta Google. A senha é gerenciada pelo
+                Google, então não há senha do FinanPlan para alterar aqui
+              </p>
             </div>
-          </div>
+          </form>
 
           <div class="config-card perigo">
             <div class="config-card-header">
@@ -237,6 +342,58 @@
         </div>
       </div>
     </main>
+
+    <div class="modal-overlay" id="modal-excluir-conta">
+      <div
+        class="modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="titulo-excluir-conta"
+      >
+        <div class="modal-topo">
+          <span class="material-icons">warning</span>
+          <h2 id="titulo-excluir-conta">Excluir conta</h2>
+        </div>
+
+        <p>
+          Todos os seus dados (transações, orçamentos e metas) serão apagados
+          permanentemente. Esta ação não pode ser desfeita.
+        </p>
+
+        <div class="form-grupo">
+          <label for="confirmar-exclusao">
+            Digite <strong>EXCLUIR</strong> para confirmar
+          </label>
+          <input
+            type="text"
+            id="confirmar-exclusao"
+            autocomplete="off"
+            autocapitalize="characters"
+            spellcheck="false"
+          />
+        </div>
+
+        <div class="modal-botoes">
+          <button
+            class="btn-secundario"
+            id="btn-cancelar-exclusao"
+            type="button"
+          >
+            Cancelar
+          </button>
+
+          <button
+            class="btn-perigo-cheio"
+            id="btn-confirmar-exclusao"
+            type="button"
+            disabled
+          >
+            <span class="material-icons">delete_forever</span>
+            Excluir definitivamente
+          </button>
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="scripts/header.js"></script>
     <script type="module" src="scripts/configuracoes.js"></script>

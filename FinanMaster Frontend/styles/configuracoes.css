@@ -46,6 +46,10 @@ body {
 img {
   width: 100%;
 }
+
+[hidden] {
+  display: none !important;
+}
 h1 {
   font-size: 2.2rem;
 }
@@ -57,14 +61,12 @@ p {
   color: var(--color-gray-dark);
 }
 
-
 main {
   width: 96%;
   margin: calc(80px + 1rem) auto 4rem;
   padding-left: 18rem;
   padding-top: 15px;
 }
-
 
 .content {
   min-width: 0;
@@ -84,8 +86,6 @@ main {
   color: var(--color-gray-light);
   margin-top: 0.2rem;
 }
-
-
 
 .config-grid {
   display: flex;
@@ -140,7 +140,6 @@ main {
   color: var(--color-gray-light);
 }
 
-
 .perfil-foto-area {
   display: flex;
   align-items: center;
@@ -149,6 +148,9 @@ main {
 }
 
 .perfil-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 4.5rem;
   height: 4.5rem;
   margin: 10px;
@@ -158,6 +160,24 @@ main {
   flex-shrink: 0;
 }
 
+.perfil-foto img {
+  height: 100%;
+  object-fit: cover;
+}
+
+.foto-iniciais {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--fp-green-dark);
+  user-select: none;
+}
+
+.foto-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
 .foto-hint {
   font-size: 0.74rem;
   color: var(--color-gray-light);
@@ -165,6 +185,9 @@ main {
 }
 
 .btn-secundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   padding: 0.55rem 1rem;
   border: 1px solid #e0e0e0;
   border-radius: var(--border-radius-1);
@@ -180,7 +203,6 @@ main {
   border-color: var(--fp-green);
   color: var(--fp-green-dark);
 }
-
 
 .form-grupo {
   display: flex;
@@ -223,7 +245,6 @@ main {
 .form-linha .form-grupo {
   margin-bottom: 1rem;
 }
-
 
 .toggle-linha {
   display: flex;
@@ -287,7 +308,6 @@ main {
   transform: translateX(1.4rem);
 }
 
-
 .config-card-footer {
   display: flex;
   justify-content: flex-end;
@@ -316,7 +336,6 @@ main {
 .btn-salvar-config .material-icons {
   font-size: 1rem;
 }
-
 
 .config-card.perigo {
   border: 1px solid var(--color-danger-light);
@@ -353,7 +372,6 @@ main {
   font-size: 1rem;
 }
 
-
 @media (max-width: 768px) {
   main {
     display: block;
@@ -375,4 +393,265 @@ main {
     width: 100%;
     justify-content: center;
   }
+}
+
+/* ===== Novos recursos da página ===== */
+
+.btn-secundario .material-icons {
+  font-size: 1rem;
+}
+
+.btn-secundario:disabled,
+.btn-salvar-config:disabled,
+.btn-perigo-cheio:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.form-grupo.sem-margem {
+  margin-bottom: 0;
+}
+
+.toggle-linha .btn-secundario {
+  flex-shrink: 0;
+}
+
+.toggle-linha {
+  gap: 1rem;
+}
+
+/* Aviso informativo (ex.: login pelo Google) */
+.aviso-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border-radius: var(--border-radius-1);
+  background: var(--fp-green-light);
+}
+
+.aviso-info .material-icons {
+  color: var(--fp-green-dark);
+  font-size: 1.4rem;
+}
+
+.aviso-info p {
+  color: var(--color-gray-dark);
+  line-height: 1.5;
+}
+
+/* Spinner dos botões */
+.girando {
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Avisos (toast) */
+#toast-area {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.2rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 240px;
+  max-width: 360px;
+  padding: 0.85rem 1.1rem;
+  border-left: 4px solid var(--fp-green);
+  border-radius: var(--border-radius-1);
+  background: #1f2430;
+  color: #fff;
+  font-size: 0.9rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  animation: toastEntrar 0.25s ease;
+}
+
+.toast .material-icons {
+  font-size: 1.3rem;
+  color: var(--fp-green);
+}
+
+.toast.erro {
+  border-left-color: var(--color-danger);
+}
+
+.toast.erro .material-icons {
+  color: #ff6b6b;
+}
+
+.toast.saindo {
+  animation: toastSair 0.3s ease forwards;
+}
+
+@keyframes toastEntrar {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastSair {
+  to {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Modal de exclusão de conta */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.modal-overlay.aberto {
+  display: flex;
+}
+
+.modal {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--card-padding);
+  border-radius: var(--card-border-radius);
+  background: var(--color-white);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  animation: modalAbrir 0.2s ease;
+}
+
+.modal-topo {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.modal-topo .material-icons {
+  font-size: 2rem;
+  color: var(--color-danger);
+}
+
+.modal-topo h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.modal > p {
+  margin-bottom: 1.2rem;
+  line-height: 1.5;
+}
+
+.modal-botoes {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn-perigo-cheio {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--border-radius-1);
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-perigo-cheio:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.btn-perigo-cheio .material-icons {
+  font-size: 1rem;
+}
+
+@keyframes modalAbrir {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 600px) {
+  .toggle-linha {
+    flex-wrap: wrap;
+  }
+
+  #toast-area {
+    right: 0.8rem;
+    left: 0.8rem;
+  }
+
+  .toast {
+    max-width: none;
+  }
+
+  .modal-botoes .btn-secundario,
+  .modal-botoes .btn-perigo-cheio {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
+/* Tema escuro (só para os elementos novos) */
+body.dark-theme .modal {
+  background: #1e1e2a;
+}
+
+body.dark-theme .modal-topo h2,
+body.dark-theme .modal label,
+body.dark-theme .modal strong {
+  color: #f1f1f5;
+}
+
+body.dark-theme .modal > p {
+  color: #a5a4ad;
+}
+
+body.dark-theme .aviso-info {
+  background: rgba(52, 211, 153, 0.1);
+}
+
+body.dark-theme .aviso-info .material-icons {
+  color: #34d399;
+}
+
+body.dark-theme .aviso-info p {
+  color: #c9c8d1;
+}
+
+body.dark-theme .foto-iniciais {
+  color: #34d399;
 }

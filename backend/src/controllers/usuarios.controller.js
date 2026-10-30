@@ -8,7 +8,7 @@ const admin = require("../../firebase/firebaseAdmin");
 const cadastrar = async (req, res) => {
   try {
     const { nome, email, senha, Telefone } = req.body;
- 
+
     if (!nome || !email || !senha) {
       return res.status(400).json({
         erro: "Nome, email e senha são obrigatórios",
@@ -123,8 +123,7 @@ const loginGoogle = async (req, res) => {
       });
     }
 
-    const idToken = authHeader.split("Bearer ")[1];
-
+    const idToken = authHeader.substring(7);
     const decodedToken = await admin.verifyIdToken(idToken);
 
     const firebaseUid = decodedToken.uid;
@@ -137,46 +136,80 @@ const loginGoogle = async (req, res) => {
       });
     }
 
-    let usuario = await prisma.Usuarios.findUnique({
-      where: {
-        email,
-      },
-      include: {
-        controles: true,
-      },
+    let usuario = await prisma.usuarios.findUnique({
+      where: { firebaseUid },
+      include: { controles: true },
     });
-
     if (!usuario) {
-      usuario = await prisma.Usuarios.create({
-        data: {
-          nome,
-          email,
-          senha: null,
-          Telefone: null,
-          firebaseUid,
-        },
+      usuario = await prisma.usuarios.findUnique({
+        where: { email },
+        include: { controles: true },
+      });
+    }
+
+    if (usuario) {
+      if (usuario.firebaseUid && usuario.firebaseUid !== firebaseUid) {
+        return res.status(409).json({
+          erro: "Este email já está vinculado a outra conta Google",
+        });
+      }
+
+      if (!usuario.firebaseUid) {
+        usuario = await prisma.usuarios.update({
+          where: { id: usuario.id },
+          data: { firebaseUid },
+          include: { controles: true },
+        });
+      }
+    } else {
+      usuario = await prisma.$transaction(async (tx) => {
+        const novoUsuario = await tx.usuarios.create({
+          data: {
+            nome,
+            email,
+            senha: null,
+            Telefone: null,
+            firebaseUid,
+          },
+        });
+
+        const controle = await tx.controle.create({
+          data: {
+            saldo: 0,
+          },
+        });
+
+        await tx.usuariosControles.create({
+          data: {
+            usuariosId: novoUsuario.id,
+            controleId: controle.id,
+          },
+        });
+
+        return tx.usuarios.findUnique({
+          where: { id: novoUsuario.id },
+          include: { controles: true },
+        });
+      });
+    }
+
+    if (!usuario.controles || usuario.controles.length === 0) {
+      await prisma.$transaction(async (tx) => {
+        const controle = await tx.controle.create({
+          data: { saldo: 0 },
+        });
+
+        await tx.usuariosControles.create({
+          data: {
+            usuariosId: usuario.id,
+            controleId: controle.id,
+          },
+        });
       });
 
-      const controle = await prisma.Controle.create({
-        data: {
-          saldo: 0,
-        },
-      });
-
-      await prisma.UsuariosControles.create({
-        data: {
-          usuariosId: usuario.id,
-          controleId: controle.id,
-        },
-      });
-
-      usuario = await prisma.Usuarios.findUnique({
-        where: {
-          id: usuario.id,
-        },
-        include: {
-          controles: true,
-        },
+      usuario = await prisma.usuarios.findUnique({
+        where: { id: usuario.id },
+        include: { controles: true },
       });
     }
 
@@ -191,8 +224,14 @@ const loginGoogle = async (req, res) => {
   } catch (error) {
     console.error("Erro no login Google:", error);
 
+    if (error.code === "P2002") {
+      return res.status(409).json({
+        erro: "Conflito ao cadastrar usuário. Tente fazer login novamente.",
+      });
+    }
+
     return res.status(401).json({
-      erro: error.message,
+      erro: "Não foi possível autenticar com o Google",
     });
   }
 };
