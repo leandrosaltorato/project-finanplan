@@ -11,7 +11,7 @@ model Usuarios {
   nome        String
   senha       String?
   email       String  @unique
-  Telefone    String?
+  Telefone    String? 
   firebaseUid String? @unique
 
   controles UsuariosControles[]
